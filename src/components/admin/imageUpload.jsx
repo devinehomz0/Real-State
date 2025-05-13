@@ -51,7 +51,7 @@ function ImageUploader({ onUploadComplete }) {
         accept="image/*"
         onChange={handleFileChange}
         disabled={uploading}
-      />
+      /><br></br>
       <button
         type="button"
         onClick={handleUploadImages}

@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import AddOrEditListing from "./addOrEditListing";
 import ListingsDisplay from "./ListingsDisplay";
+import "../styles/admin.css"
 function Admin() {
   const [listings, setListings] = useState([]);
   const [editingListing, setEditingListing] = useState(null);
