@@ -100,7 +100,7 @@ function ListingsDisplay({ listings, onEdit, fetchListings }) {
               </span>
             </div>
             {/* Actions */}
-            <div style={{ marginTop: 8 }}>
+            {/* <div style={{ marginTop: 8 }}>
               <button onClick={() => onEdit(listing)}>Edit</button>
               <button
                 onClick={() => handleDelete(listing.id)}
@@ -108,7 +108,7 @@ function ListingsDisplay({ listings, onEdit, fetchListings }) {
               >
                 Delete
               </button>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
