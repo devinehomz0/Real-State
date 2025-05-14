@@ -4,7 +4,7 @@ import HomePage from "./Home";
 function App() {
   return (
     <>
-      <HomePage></HomePage>
+      {/* <HomePage></HomePage> */}
       <Admin></Admin>
     </>
   );

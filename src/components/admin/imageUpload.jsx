@@ -3,13 +3,9 @@ import { useState } from "react";
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-
-
 function ImageUploader({ onUploadComplete }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
-
   const handleFileChange = (e) => {
     setSelectedFiles(Array.from(e.target.files));
   };
@@ -44,14 +40,14 @@ function ImageUploader({ onUploadComplete }) {
   };
 
   return (
-    <div>
+    <div className="input_image">
       <input
         type="file"
         multiple
         accept="image/*"
         onChange={handleFileChange}
         disabled={uploading}
-      /><br></br>
+      />
       <button
         type="button"
         onClick={handleUploadImages}
