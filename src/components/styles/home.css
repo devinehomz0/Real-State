@@ -1,0 +1,18 @@
+.listings{
+    display:none
+}
+.text_content{
+    text-align: center;
+    margin-top: 6rem;
+}
+.text_content h1{
+    font-family: roboto;
+    font-size: 2.5rem;
+    font-weight: 500;
+}
+.text_content p{
+    font-size: 1.3rem;
+    font-family: roboto;
+    color:rgba(53, 53, 53, 0.749);
+    
+}

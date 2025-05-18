@@ -1,4 +1,3 @@
-// src/components/ListingsDisplay.js
 import { db } from "../../config/firebase";
 import { deleteDoc, doc } from "firebase/firestore";
 
@@ -15,100 +14,196 @@ function ListingsDisplay({ listings, onEdit, fetchListings }) {
   };
 
   // Helper to display Yes/No fields
-  const displayYesNo = (val) => (val === "yes" ? "Yes" : "No");
+  const displayYesNo = (val) =>
+    val === "yes" ? "Yes" : val === "no" ? "No" : val || "-";
+
+  // Helper to show a field only if it exists
+  const Field = ({ label, value, strong, suffix }) =>
+    value !== undefined &&
+    value !== "" &&
+    value !== null &&
+    value !== "not_applicable" ? (
+      <div className="listing-field">
+        <span className="listing-label">{label}</span>
+        {strong ? <b>{value}</b> : value}
+        {suffix || ""}
+      </div>
+    ) : null;
 
   return (
     <div>
-      <h2>All Listings</h2>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "24px" }}>
+      <h2 style={{ margin: "18px 0 24px 0" }}>All Listings</h2>
+      <div className="listings-grid">
         {listings.map((listing) => (
-          <div
-            key={listing.id}
-            style={{
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "12px",
-              width: "320px",
-              background: "#fafafa",
-              boxShadow: "0 1px 4px #eee",
-            }}
-          >
+          <div className="listing-card" key={listing.id}>
             {/* Images */}
-            <div
-              style={{
-                display: "flex",
-                gap: "5px",
-                flexWrap: "wrap",
-                marginBottom: 8,
-              }}
-            >
-              {listing.imageUrls &&
-                listing.imageUrls.map((url, idx) => (
+            {listing.imageUrls && listing.imageUrls.length > 0 && (
+              <div className="listing-images">
+                {listing.imageUrls.slice(0, 5).map((url, idx) => (
                   <img
                     src={url}
                     alt={`Listing ${idx}`}
-                    width={70}
+                    className="listing-thumb"
                     key={url}
-                    style={{ borderRadius: "4px" }}
                   />
                 ))}
+                {listing.imageUrls.length > 5 && (
+                  <span className="more-images">
+                    +{listing.imageUrls.length - 5}
+                  </span>
+                )}
+              </div>
+            )}
+
+            <div className="listing-content">
+              <div className="listing-header">
+                <h3>{listing.title}</h3>
+                <div className="listing-type-status">
+                  {Field({
+                    label: "",
+                    value: listing.type,
+                  })}
+                  {listing.type && listing.status && <span> | </span>}
+                  {Field({
+                    label: "",
+                    value: listing.status,
+                  })}
+                </div>
+              </div>
+              {/* Project Name */}
+              {Field({
+                label: "Project:",
+                value: listing.projectName,
+              })}
+              {/* Address */}
+              {Field({
+                label: "Address:",
+                value: [
+                  listing.address,
+                  listing.city,
+                  listing.state,
+                  listing.zip,
+                ]
+                  .filter(Boolean)
+                  .join(", "),
+              })}
+              {/* Price */}
+              {Field({
+                label: "Price:",
+                value: listing.price
+                  ? `₹${Number(listing.price).toLocaleString()}`
+                  : "-",
+                strong: true,
+              })}
+              {/* BHK, Bedrooms, Bathrooms */}
+              <div className="listing-row">
+                {Field({
+                  label: "BHK:",
+                  value: listing.bhk,
+                })}
+                {Field({
+                  label: "Bedrooms:",
+                  value: listing.bedrooms,
+                })}
+                {Field({
+                  label: "Bathrooms:",
+                  value: listing.bathrooms,
+                })}
+              </div>
+              {/* Super Builtup Area, Carpet Area */}
+              <div className="listing-row">
+                {Field({
+                  label: "Super Builtup Area:",
+                  value: listing.superBuiltupArea
+                    ? `${listing.superBuiltupArea} sq ft`
+                    : undefined,
+                })}
+                {Field({
+                  label: "Carpet Area:",
+                  value: listing.carpetArea
+                    ? `${listing.carpetArea} sq ft`
+                    : undefined,
+                })}
+                {Field({
+                  label: "Maintenance:",
+                  value: listing.maintenance
+                    ? `₹${listing.maintenance}/mo`
+                    : undefined,
+                })}
+              </div>
+              {/* Floor Details */}
+              <div className="listing-row">
+                {Field({
+                  label: "Total Floors:",
+                  value: listing.totalFloors,
+                })}
+                {Field({
+                  label: "Floor No:",
+                  value: listing.floorNo,
+                })}
+                {Field({
+                  label: "Car Parking:",
+                  value: listing.carParking,
+                })}
+              </div>
+              {/* Facing, Furnishing, Project Status, Listed By */}
+              <div className="listing-row">
+                {Field({
+                  label: "Facing:",
+                  value: listing.facing,
+                })}
+                {Field({
+                  label: "Furnishing:",
+                  value: listing.furnishing,
+                })}
+                {Field({
+                  label: "Project Status:",
+                  value: listing.projectStatus,
+                })}
+                {Field({
+                  label: "Listed By:",
+                  value: listing.listedBy,
+                })}
+              </div>
+              {/* Garage, Outdoor, Features */}
+              <div className="listing-row">
+                {Field({
+                  label: "Garage:",
+                  value: displayYesNo(listing.garage),
+                })}
+                {Field({
+                  label: "Outdoor Space:",
+                  value: displayYesNo(listing.outdoor),
+                })}
+                {Field({
+                  label: "Features:",
+                  value: Array.isArray(listing.features)
+                    ? listing.features.join(", ")
+                    : listing.features,
+                })}
+              </div>
+              {/* Description */}
+              {Field({
+                label: "Description:",
+                value: (
+                  <span style={{ whiteSpace: "pre-line" }}>
+                    {listing.description}
+                  </span>
+                ),
+              })}
             </div>
-            {/* Main Info */}
-            <h3 style={{ margin: "0 0 4px 0" }}>{listing.title}</h3>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>Type:</b> {listing.type || "-"} &nbsp; | &nbsp;
-              <b>Status:</b> {listing.status || "-"}
-            </div>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>Address:</b> {listing.address}, {listing.city}, {listing.state}{" "}
-              {listing.zip}
-            </div>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>Price:</b> ₹{listing.price?.toLocaleString?.() || "-"} &nbsp;
-            </div>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>BHK:</b>{" "}
-              {listing.bhk && listing.bhk !== "not_applicable"
-                ? listing.bhk
-                : "-"}
-              &nbsp; | &nbsp;
-              <b>Bedrooms:</b> {listing.bedrooms || "-"}
-              &nbsp; | &nbsp;
-              <b>Bathrooms:</b> {listing.bathrooms || "-"}
-            </div>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>Total Area:</b> {listing.area ? `${listing.area} sq ft` : "-"}
-            </div>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>Parking:</b> {displayYesNo(listing.parking)}
-              &nbsp; | &nbsp;
-              <b>Garage:</b> {displayYesNo(listing.garage)}
-              &nbsp; | &nbsp;
-              <b>Outdoor Space:</b> {displayYesNo(listing.outdoor)}
-            </div>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>Features:</b>{" "}
-              {Array.isArray(listing.features)
-                ? listing.features.join(", ")
-                : listing.features || "-"}
-            </div>
-            <div style={{ fontSize: "0.95em", marginBottom: 8 }}>
-              <b>Description:</b>
-              <br />
-              <span style={{ whiteSpace: "pre-line" }}>
-                {listing.description}
-              </span>
-            </div>
-            {/* Actions */}
-            {/* <div style={{ marginTop: 8 }}>
-              <button onClick={() => onEdit(listing)}>Edit</button>
+            {/* Actions (uncomment if needed) */}
+            <div className="listing-actions">
+              <button onClick={() => onEdit(listing)} className="edit">
+                Edit
+              </button>
               <button
                 onClick={() => handleDelete(listing.id)}
-                style={{ marginLeft: "8px", color: "red" }}
+                className="delete"
               >
                 Delete
               </button>
-            </div> */}
+            </div>
           </div>
         ))}
       </div>

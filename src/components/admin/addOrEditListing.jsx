@@ -1,4 +1,3 @@
-// src/components/AddOrEditListing.js
 import React, { useState, useEffect } from "react";
 import { addDoc, updateDoc, collection, doc } from "firebase/firestore";
 import { db } from "../../config/firebase";
@@ -11,94 +10,200 @@ const initialForm = {
   city: "",
   state: "",
   zip: "",
-  status: "", // For Sale or For Rent
+  status: "",
   price: "",
   negotiable: "no",
   bedrooms: "",
   bathrooms: "",
-  area: "",
-  parking: "no",
-  outdoor: "no",
+  outdoor: "",
   features: "",
   description: "",
-  bhk: "not_applicable",
-  garage:"no",
+  bhk: "",
+  garage: "",
+  superBuiltupArea: "",
+  carpetArea: "",
+  maintenance: "",
+  totalFloors: "",
+  floorNo: "",
+  carParking: "",
+  furnishing: "",
+  projectStatus: "",
+  listedBy: "",
+  facing: "",
+  projectName: "",
 };
+
+const typeOptions = [
+  "Flats / Apartments",
+  "Independent / Builder Floors",
+  "Farm House",
+  "House & Villa",
+];
+const bhkOptions = ["1", "2", "3", "4", "4+"];
+const bathroomOptions = ["1", "2", "3", "4", "4+"];
+const bedroomOptions = ["1", "2", "3", "4", "4+"];
+const furnishingOptions = ["Furnished", "Semi-Furnished", "Unfurnished"];
+const projectStatusOptions = [
+  "New Launch",
+  "Ready to Move",
+  "Under Construction",
+];
+const listedByOptions = ["Builder", "Dealer", "Owner"];
+const carParkingOptions = ["0", "1", "2", "3", "3+"];
+const facingOptions = [
+  "East",
+  "North",
+  "North-East",
+  "North-West",
+  "South",
+  "South-East",
+  "South-West",
+  "West",
+];
+const statusOptions = ["For Sale", "For Rent"];
 
 function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
   const [form, setForm] = useState(initialForm);
   const [imageUrls, setImageUrls] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [imagesUploading, setImagesUploading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (editingListing) {
       setForm({
-        title: editingListing.title || "",
-        type: editingListing.type || "",
-        address: editingListing.address || "",
-        city: editingListing.city || "",
-        state: editingListing.state || "",
-        zip: editingListing.zip || "",
-        status: editingListing.status || "",
-        price: editingListing.price || "",
-        negotiable: editingListing.negotiable || "no",
-        bedrooms: editingListing.bedrooms || "",
-        bathrooms: editingListing.bathrooms || "",
-        area: editingListing.area || "",
-        parking: editingListing.parking || "no",
-        outdoor: editingListing.outdoor || "no",
+        ...initialForm,
+        ...editingListing,
         features: editingListing.features
           ? Array.isArray(editingListing.features)
             ? editingListing.features.join(", ")
             : editingListing.features
           : "",
-        description: editingListing.description || "",
-        bhk: editingListing.bhk || "not_applicable",
-        garage: editingListing.garage || "no",
       });
       setImageUrls(editingListing.imageUrls || []);
     } else {
       setForm(initialForm);
       setImageUrls([]);
     }
+    setErrors({});
   }, [editingListing]);
 
+  // Image uploader handlers
   const handleUploadComplete = (urls) => {
     setImageUrls(urls);
+    setImagesUploading(false);
   };
 
+  const handleImagesUploading = (uploading) => {
+    setImagesUploading(uploading);
+  };
+
+  // Validation helpers
+  const validateField = (name, value) => {
+    switch (name) {
+      case "title":
+      case "address":
+      case "city":
+      case "state":
+      case "status":
+      case "description":
+      case "type":
+      case "bhk":
+      case "bedrooms":
+      case "bathrooms":
+      case "furnishing":
+      case "projectStatus":
+      case "listedBy":
+      case "superBuiltupArea":
+      case "carpetArea":
+        if (!value || value === "") return "This field is required";
+        break;
+      case "price":
+        if (!value || value === "") return "This field is required";
+        if (isNaN(value) || Number(value) <= 0)
+          return "Enter a valid positive price";
+        break;
+      case "zip":
+        if (!value || value === "") return "This field is required";
+        if (!/^\d{5,10}$/.test(value))
+          return "Enter a valid zip code (5-10 digits)";
+        break;
+      case "superBuiltupArea":
+      case "carpetArea":
+        if (!value || value === "") return "This field is required";
+        if (isNaN(value) || Number(value) <= 0)
+          return "Enter a valid positive number";
+        break;
+      default:
+        return "";
+    }
+    return "";
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+    Object.keys(initialForm).forEach((key) => {
+      // Only validate required fields
+      if (
+        [
+          "title",
+          "type",
+          "address",
+          "city",
+          "state",
+          "zip",
+          "status",
+          "price",
+          "description",
+          "bhk",
+          "bedrooms",
+          "bathrooms",
+          "furnishing",
+          "projectStatus",
+          "listedBy",
+          "superBuiltupArea",
+          "carpetArea",
+        ].includes(key)
+      ) {
+        const err = validateField(key, form[key]);
+        if (err) newErrors[key] = err;
+      }
+    });
+    if (!imageUrls.length) {
+      newErrors.images = "Please upload at least one image";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const handleSelect = (name, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate required fields
-    const requiredFields = [
-      "title",
-      "type",
-      "address",
-      "city",
-      "state",
-      "zip",
-      "status",
-      "price",
-      "description",
-    ];
-    for (let field of requiredFields) {
-      if (!form[field]) {
-        alert("Please fill all required fields.");
-        return;
-      }
-    }
-    if (!imageUrls.length) {
-      alert("Please upload at least one image.");
-      return;
-    }
+    if (!validateForm()) return;
+
     setSubmitting(true);
 
     const listingData = {
@@ -106,7 +211,13 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
       price: Number(form.price),
       bedrooms: form.bedrooms ? Number(form.bedrooms) : "",
       bathrooms: form.bathrooms ? Number(form.bathrooms) : "",
-      area: form.area ? Number(form.area) : "",
+      superBuiltupArea: form.superBuiltupArea
+        ? Number(form.superBuiltupArea)
+        : "",
+      carpetArea: form.carpetArea ? Number(form.carpetArea) : "",
+      maintenance: form.maintenance ? Number(form.maintenance) : "",
+      totalFloors: form.totalFloors ? Number(form.totalFloors) : "",
+      floorNo: form.floorNo ? Number(form.floorNo) : "",
       imageUrls,
       features:
         typeof form.features === "string"
@@ -134,62 +245,186 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
     setImageUrls([]);
     setSubmitting(false);
     fetchListings();
+    setErrors({});
   };
 
+  // Button group renderer
+  const renderButtonGroup = (name, options) => (
+    <div className="button-group">
+      {options.map((option) => (
+        <button
+          type="button"
+          key={option}
+          className={
+            form[name] === option ? "btn-select selected" : "btn-select"
+          }
+          onClick={() => handleSelect(name, option)}
+        >
+          {option}
+        </button>
+      ))}
+      {errors[name] && <div className="form-error">{errors[name]}</div>}
+    </div>
+  );
+
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
-      <h2>{editingListing ? "Edit Listing" : "Create New Listing"}</h2>
-      {/* Property Details */}
-      <fieldset>
-        <div className="one">
-          {" "}
-          <label>
-            Property Title*:
-            <br />
-            <input
-              type="text"
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Type of Property*:
-            <br />
-            <select
-              name="type"
-              value={form.type}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select type</option>
-              <option value="single-family">Single Family Home</option>
-              <option value="apartment">Apartment</option>
-              <option value="townhouse">Townhouse</option>
-              <option value="commercial">Commercial</option>
-              <option value="land">Land</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <label>
-            Status*:
-            <br />
-            <select
-              name="status"
-              value={form.status}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select status</option>
-              <option value="for sale">For Sale</option>
-              <option value="for rent">For Rent</option>
-            </select>
-          </label>
+    <form onSubmit={handleSubmit} className="property-form">
+      <h2>Create New Listing</h2>
+      {/* Type */}
+      <div className="form-section">
+        <label>Type *</label>
+        {renderButtonGroup("type", typeOptions)}
+      </div>
+      {/* BHK, Bedrooms, Bathrooms */}
+      <div className="form-row">
+        <div>
+          <label>BHK *</label>
+          {renderButtonGroup("bhk", bhkOptions)}
         </div>
-        <label>
-          Property Address*:
-          <br />
+        <div>
+          <label>Bedrooms *</label>
+          {renderButtonGroup("bedrooms", bedroomOptions)}
+        </div>
+        <div>
+          <label>Bathrooms *</label>
+          {renderButtonGroup("bathrooms", bathroomOptions)}
+        </div>
+      </div>
+      {/* Furnishing, Project Status, Listed By */}
+      <div className="form-row">
+        <div>
+          <label>Furnishing *</label>
+          {renderButtonGroup("furnishing", furnishingOptions)}
+        </div>
+        <div>
+          <label>Project Status *</label>
+          {renderButtonGroup("projectStatus", projectStatusOptions)}
+        </div>
+        <div>
+          <label>Listed By *</label>
+          {renderButtonGroup("listedBy", listedByOptions)}
+        </div>
+      </div>
+      {/* Super Builtup Area, Carpet Area */}
+      <div className="form-row">
+        <div>
+          <label>Super Builtup Area (sqft) *</label>
+          <input
+            type="number"
+            name="superBuiltupArea"
+            value={form.superBuiltupArea}
+            onChange={handleChange}
+            required
+          />
+          {errors.superBuiltupArea && (
+            <div className="form-error">{errors.superBuiltupArea}</div>
+          )}
+        </div>
+        <div>
+          <label>Carpet Area (sqft) *</label>
+          <input
+            type="number"
+            name="carpetArea"
+            value={form.carpetArea}
+            onChange={handleChange}
+            required
+          />
+          {errors.carpetArea && (
+            <div className="form-error">{errors.carpetArea}</div>
+          )}
+        </div>{" "}
+        <div>
+          <label>Facing</label>
+          <select name="facing" value={form.facing} onChange={handleChange}>
+            <option value="">Select</option>
+            {facingOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      {/* Maintenance, Total Floors, Floor No */}
+      <div className="form-row">
+        <div>
+          <label>Maintenance (Monthly)</label>
+          <input
+            type="number"
+            name="maintenance"
+            value={form.maintenance}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Total Floors</label>
+          <input
+            type="number"
+            name="totalFloors"
+            value={form.totalFloors}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Floor No</label>
+          <input
+            type="number"
+            name="floorNo"
+            value={form.floorNo}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+      {/* Car Parking, Facing */}
+      <div className="form-row">
+        <div>
+          <label>Car Parking</label>
+          {renderButtonGroup("carParking", carParkingOptions)}
+        </div>
+
+        <div>
+          <label>Project Name</label>
+          <input
+            type="text"
+            name="projectName"
+            value={form.projectName}
+            onChange={handleChange}
+            maxLength={70}
+          />
+        </div>
+        <div>
+          <label>Title </label>
+          <input
+            type="text"
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            maxLength={70}
+            required
+          />
+          <div className="char-count">{form.title.length} / 70</div>
+          {errors.title && <div className="form-error">{errors.title}</div>}
+        </div>
+      </div>
+      {/* Description */}
+      <div className="form-section">
+        <label>Description </label>
+        <textarea
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          maxLength={4096}
+          required
+        />
+        <div className="char-count">{form.description.length} / 4096</div>
+        {errors.description && (
+          <div className="form-error">{errors.description}</div>
+        )}
+      </div>
+      {/* Address, City, State, Zip, Status, Features, Garage, Outdoor */}
+      <div className="form-row">
+        <div>
+          <label>Address *</label>
           <input
             type="text"
             name="address"
@@ -197,202 +432,121 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
             onChange={handleChange}
             required
           />
-        </label>
-
-        <div className="one">
-          {" "}
-          <label>
-            City*:
-            <br />
-            <input
-              type="text"
-              name="city"
-              value={form.city}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            State*:
-            <br />
-            <input
-              type="text"
-              name="state"
-              value={form.state}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Zip Code*:
-            <br />
-            <input
-              type="text"
-              name="zip"
-              value={form.zip}
-              onChange={handleChange}
-              required
-            />
-          </label>
+          {errors.address && <div className="form-error">{errors.address}</div>}
         </div>
-
-        <div className="one">
-          {" "}
-          <label>
-            Listing Price*:
-            <br />
-            <input
-              type="number"
-              name="price"
-              min="0"
-              step="any"
-              value={form.price}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Bedrooms:
-            <br />
-            <input
-              type="number"
-              name="bedrooms"
-              min="0"
-              value={form.bedrooms}
-              onChange={handleChange}
-            />
-          </label>{" "}
-          <label>
-            Bathrooms:
-            <br />
-            <input
-              type="number"
-              name="bathrooms"
-              min="0"
-              value={form.bathrooms}
-              onChange={handleChange}
-            />
-          </label>
+        <div>
+          <label>City *</label>
+          <input
+            type="text"
+            name="city"
+            value={form.city}
+            onChange={handleChange}
+            required
+          />
+          {errors.city && <div className="form-error">{errors.city}</div>}
         </div>
-
-        <div className="one">
-          {" "}
-          <label>
-            Features (comma separated)
-            <br />
-            <input
-              type="text"
-              name="features"
-              value={form.features}
-              onChange={handleChange}
-              placeholder="e.g. Pool, Fireplace, Garden"
-            />
-          </label>
-          <label>
-            Total Area (sq ft):
-            <br />
-            <input
-              type="number"
-              name="area"
-              min="0"
-              step="any"
-              value={form.area}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            BHK:
-            <br />
-            <select name="bhk" value={form.bhk} onChange={handleChange}>
-              <option value="not_applicable">Not Applicable</option>
-              <option value="1">1 BHK</option>
-              <option value="1.5">1.5 BHK</option>
-              <option value="2">2 BHK</option>
-              <option value="2.5">2.5 BHK</option>
-              <option value="3">3 BHK</option>
-              <option value="3.5">3.5 BHK</option>
-              <option value="4">4 BHK</option>
-              <option value="4.5">4.5 BHK</option>
-              <option value="5+">5+ BHK</option>
-            </select>
-          </label>
+        <div>
+          <label>State *</label>
+          <input
+            type="text"
+            name="state"
+            value={form.state}
+            onChange={handleChange}
+            required
+          />
+          {errors.state && <div className="form-error">{errors.state}</div>}
         </div>
-
-        <div className="one">
-          {" "}
-          <label>
-            Parking Available?:
-            <br />
-            <select name="parking" value={form.garage} onChange={handleChange}>
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </label>
-          <label>
-            Garage Available?:
-            <br />
-            <select name="parking" value={form.parking} onChange={handleChange}>
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </label>
-          <label>
-            Outdoor Space?:
-            <br />
-            <select name="outdoor" value={form.outdoor} onChange={handleChange}>
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </label>
+        <div>
+          <label>Zip *</label>
+          <input
+            type="text"
+            name="zip"
+            value={form.zip}
+            onChange={handleChange}
+            required
+          />
+          {errors.zip && <div className="form-error">{errors.zip}</div>}
         </div>
-
-        <div className="one">
-          {" "}
-          <label>
-            Property Description*:
-            <br />
-            <textarea
-              name="description"
-              rows={4}
-              value={form.description}
-              onChange={handleChange}
-              required
-            />
-          </label>
+      </div>
+      <div className="form-row">
+        <div>
+          <label>Status *</label>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select status</option>
+            {statusOptions.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+          {errors.status && <div className="form-error">{errors.status}</div>}
         </div>
-
-        <label>
-          Property Images*:
-          <br />
-          <ImageUploader onUploadComplete={handleUploadComplete} />
-        </label>
-        <br />
+        <div>
+          <label>Features (comma separated)</label>
+          <input
+            type="text"
+            name="features"
+            value={form.features}
+            onChange={handleChange}
+            placeholder="e.g. Pool, Fireplace, Garden"
+          />
+        </div>
+        <div>
+          <label>Garage Available?</label>
+          <select name="garage" value={form.garage} onChange={handleChange}>
+            <option value="">Select</option>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+        <div>
+          <label>Outdoor Space?</label>
+          <select name="outdoor" value={form.outdoor} onChange={handleChange}>
+            <option value="">Select</option>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+          </select>
+        </div>
+      </div>
+      {/* Price */}
+      <div className="form-section">
+        <label>Set a Price *</label>
+        <input
+          type="number"
+          name="price"
+          value={form.price}
+          onChange={handleChange}
+          required
+        />
+        {errors.price && <div className="form-error">{errors.price}</div>}
+      </div>
+      {/* Image Upload */}
+      <div className="form-section">
+        <label>Upload up to 20 Photos</label>
+        <ImageUploader
+          onUploadComplete={handleUploadComplete}
+          onUploading={handleImagesUploading}
+          maxImages={20}
+        />
         {imageUrls.length > 0 && (
-          <div>
-            <p>Uploaded Images:</p>
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {imageUrls.map((url, idx) => (
-                <img src={url} alt={`Uploaded ${idx}`} width={80} key={url} />
-              ))}
-            </div>
+          <div className="uploaded-images">
+            {imageUrls.map((url, idx) => (
+              <img src={url} alt={`Uploaded ${idx}`} key={url} width={80} />
+            ))}
           </div>
         )}
-        
-        <button
+        {errors.images && <div className="form-error">{errors.images}</div>}
+      </div>
+      {/* Submit */}
+      <button
         type="submit"
-        disabled={
-          submitting ||
-          !form.title ||
-          !form.type ||
-          !form.address ||
-          !form.city ||
-          !form.state ||
-          !form.zip ||
-          !form.status ||
-          !form.price ||
-          !form.description ||
-          !imageUrls.length
-        }
+        className="submit-btn"
+        disabled={submitting || imagesUploading || !imageUrls.length}
       >
         {submitting
           ? editingListing
@@ -403,20 +557,20 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
           : "Create Listing"}
       </button>
       {editingListing && (
-        <button
-          type="button"
-          onClick={clearEditing}
-          style={{ marginLeft: "10px" }}
-        >
+        <button type="button" className="cancel-btn" onClick={clearEditing}>
           Cancel
         </button>
       )}
-      </fieldset>
-
-
-      
     </form>
   );
 }
 
 export default AddOrEditListing;
+
+/* Add this to your CSS:
+.form-error {
+  color: #d32f2f;
+  font-size: 13px;
+  margin-top: 3px;
+}
+*/

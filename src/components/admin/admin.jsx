@@ -4,7 +4,7 @@ import { db } from "../../config/firebase";
 import AddOrEditListing from "./addOrEditListing";
 import ListingsDisplay from "./ListingsDisplay";
 import "../styles/admin.css"
-function Admin() {
+function AdminMain() {
   const [listings, setListings] = useState([]);
   const [editingListing, setEditingListing] = useState(null);
 
@@ -40,4 +40,4 @@ function Admin() {
   );
 }
 
-export default Admin;
+export default AdminMain;
