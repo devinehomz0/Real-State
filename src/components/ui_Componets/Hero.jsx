@@ -43,12 +43,17 @@ export default function Hero() {
       <div className="hero-content">
         <Navbar />
         <div className="hero-center-content">
-          <h1>Welcome to Devine Homz</h1>
+          <h1>Welcome to <br className="br_welcome"/> Devine Homz</h1>
           <p>
-            Devine Homz is dedicated to helping you find the perfect property, <br />
+            Devine Homz is dedicated to helping you find the perfect property, <br className="br_p"/>
                       whether you're buying, selling, or renting. Experience seamless real <br />
             estate solutions with our expert team.
           </p>
+
+        </div>
+        <div className="hero_buttons">
+          <a href="">Explore Listings</a>
+          <a href="">Contact Us</a>
         </div>
       </div>
     </div>

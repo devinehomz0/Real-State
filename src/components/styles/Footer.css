@@ -183,3 +183,307 @@ address p {
     gap: var(--space-sm);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+:root {
+  --footer-bg-main: #004274f6; /* Dark blue from image */
+  --footer-bg-bottom: #004274;; /* Even darker blue for bottom bar */
+  --footer-text-color: #c5d9ed; /* Light grayish blue for text */
+  --footer-heading-color: #ffffff;
+  --footer-link-hover-color: #38b6ff; /* Light blue for hover, similar to button */
+  --footer-button-bg: #00aeff; /* Original button color */
+  --footer-button-text: #ffffff;
+  --footer-icon-color: #8fa6c1; /* Slightly muted icon color */
+}
+
+.site-footer {
+  position: relative; /* For the back-to-top button positioning */
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px; /* Adjust as needed */
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Main Footer Area (dark blue) */
+.footer-main {
+  background-color: var(--footer-bg-main);
+  color: var(--footer-text-color);
+  padding: 50px 0;
+}
+
+.footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: space-between;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 220px; /* Ensures columns don't get too squished before wrapping */
+  margin-bottom: 20px;
+}
+
+.footer-column h4 {
+  color: var(--footer-heading-color);
+  font-size: 1.1em;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.footer-column p {
+  font-size: 0.9em;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+.footer-link {
+  color: var(--footer-text-color);
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: var(--footer-link-hover-color);
+  text-decoration: underline;
+}
+
+.footer-column .read-more {
+  display: inline-block;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.contact-list li {
+  display: flex;
+  align-items: flex-start; /* Align icon to top if text wraps */
+  margin-bottom: 12px;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.contact-icon {
+  color: var(--footer-icon-color);
+  margin-right: 10px;
+  font-size: 1.1em; /* Make icon slightly larger */
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  margin-top: 2px; /* Align better with text */
+}
+
+.contact-button {
+  display: inline-block;
+  background-color: transparent;
+  border: 1px solid var(--footer-button-text);
+  color: var(--footer-button-text);
+  padding: 8px 18px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.contact-button:hover {
+  background-color: var(--footer-button-text);
+  color: var(--footer-bg-main);
+  text-decoration: none;
+}
+
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links-list li {
+  margin-bottom: 10px;
+}
+
+/* Footer Bottom Bar (even darker blue) */
+.footer-bottom {
+  background-color: var(--footer-bg-bottom);
+  color: var(--footer-text-color);
+  padding: 20px 0;
+  font-size: 0.85em;
+}
+
+.footer-bottom-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.copyright {
+  margin: 0;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.footer-legal-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* Allow links to wrap on small screens */
+  justify-content: center; /* Center when wrapped */
+}
+
+.social-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.social-icon-link {
+  color: var(--footer-icon-color);
+  font-size: 1.2em; /* Make social icons a bit larger */
+  transition: color 0.3s ease;
+}
+
+.social-icon-link:hover {
+  color: var(--footer-link-hover-color);
+}
+
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--footer-button-bg);
+  color: var(--footer-button-text);
+  border: none;
+  border-radius: 5px;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+.back-to-top:hover {
+  background-color: #0095dd; /* Darker shade of button blue */
+  transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+  .footer-column {
+    min-width: calc(50% - 15px); /* Two columns on medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-columns {
+    flex-direction: column; /* Stack columns */
+    gap: 20px;
+  }
+  .footer-column {
+    min-width: 100%; /* Full width for stacked columns */
+    margin-bottom: 30px;
+  }
+  .footer-column:last-child {
+    margin-bottom: 0;
+  }
+  .footer-main {
+    padding: 40px 0;
+  }
+  .footer-bottom-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer-legal-links {
+    order: 1; /* Copyright, then social, then legal links for mobile */
+    margin-top: 10px;
+  }
+  .social-icons {
+    order: 2;
+    margin-top: 10px;
+  }
+  .copyright {
+    order: 3;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-to-top {
+    width: 35px;
+    height: 35px;
+    font-size: 1em;
+    bottom: 15px;
+    right: 15px;
+  }
+}

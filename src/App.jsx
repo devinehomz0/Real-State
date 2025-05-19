@@ -4,6 +4,7 @@ import Properties from "./components/admin/Properties";
 import Inquiries from "./components/admin/Inquiries";
 import CreateProperty from "./components/admin/CreateProperty";
 import AdminMain from "./components/admin/admin";
+import HomePage from "./pages/Home";
 function App() {
   return (
     <Router>
@@ -15,6 +16,7 @@ function App() {
           <Route path="create-property" element={<CreateProperty />} />
         </Route>
         <Route path="/" element={<AdminMain></AdminMain>}></Route>
+        <Route path="/home" element={<HomePage></HomePage>}></Route>
       </Routes>
     </Router>
   );

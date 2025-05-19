@@ -1,0 +1,183 @@
+.hor_listing {
+    width: 90%; /* Or 80% as you had, adjust as needed */
+    max-width: 1400px;
+    margin: 0 auto;
+    /* background: #fff; */ /* Kept commented as per your CSS */
+    box-sizing: border-box;
+    padding: 24px 0;
+  }
+  
+  .carousel-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 16px;
+    width: 100%;
+    padding: 0 10px; /* Added for some spacing on edges */
+    box-sizing: border-box;
+  }
+  
+  .carousel-nav {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .carousel-btn {
+    padding: 6px 18px;
+    border: 1px solid #b0d2f7;
+    background: #fff;
+    color: #007bff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+  }
+  .carousel-btn:hover {
+    background: #f0f8ff;
+    color: #0056b3;
+  }
+  .carousel-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .carousel-list-outer {
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  .carousel-list-inner {
+    display: flex;
+    /* gap: 24px; */ /* REMOVE THIS - Gap is now set via inline style by JS */
+    will-change: transform;
+  }
+  
+  .carousel-card {
+    background: #fafafa;
+    /* border-radius: 12px; */ /* Kept commented as per your CSS */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* min-width: 0; */ /* REMOVE THIS - Width is now precisely set by JS */
+    transition: box-shadow 0.2s;
+    flex-shrink: 0; /* Important: Prevent cards from shrinking */
+  }
+  
+  .carousel-img-wrap {
+    position: relative;
+    width: 100%;
+    /* height: 160px; */ /* Your original fixed height */
+    padding-top: 62.5%; /* Using padding-top for responsive height (e.g., 8:5 ratio). Adjust as needed. 56.25% is 16:9 */
+    /* border-radius: 12px 12px 0 0; */ /* Kept commented as per your CSS */
+    overflow: hidden;
+    background: #eee; /* Placeholder background */
+  }
+  
+  .carousel-img-wrap img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .carousel-labels {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 1;
+  }
+  
+  .label {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+  }
+  .label.featured {
+    background: #36d399;
+  }
+  .label.for {
+    background: #222;
+  }
+  
+  .carousel-price {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(0deg, rgba(0,0,0,0.7) 70%, rgba(0,0,0,0));
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 12px 16px 8px 16px;
+    /* border-radius: 0 0 12px 12px; */ /* Kept commented */
+    box-sizing: border-box;
+    z-index: 1;
+  }
+  
+  .carousel-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 14px 18px 6px 18px; /* Adjusted L/R margin */
+    color: #333;
+  }
+  
+  .carousel-info {
+    display: flex;
+    gap: 18px;
+    font-size: 1rem;
+    color: #444;
+    margin: 0 18px 8px 18px; /* Adjusted L/R margin */
+  }
+  
+  .carousel-info span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .carousel-type {
+    font-size: 0.9rem;
+    color: #888;
+    text-transform: uppercase;
+    margin: 0 18px 14px 18px; /* Adjusted L/R margin */
+  }
+  
+  .hor_listing_empty {
+    text-align: center;
+    padding: 40px;
+    font-size: 1.2em;
+    color: #777;
+  }
+  
+  
+  /* 
+    REMOVE or COMMENT OUT your existing @media queries for .carousel-card min-width and .carousel-list-inner gap.
+    For example:
+  
+  @media (max-width: 1200px) {
+    .carousel-card {
+      min-width: 32%; // REMOVE
+    }
+  }
+  @media (max-width: 900px) {
+    .carousel-card {
+      min-width: 48%; // REMOVE
+    }
+  }
+  @media (max-width: 700px) {
+    .carousel-card {
+      min-width: 100%; // REMOVE
+    }
+    .carousel-list-inner {
+      gap: 12px; // REMOVE
+    }
+  }
+  */

@@ -1,0 +1,248 @@
+/* Define base variables */
+:root {
+    --card-unit-height: 200px;
+    --grid-gap: 24px;
+    --card-width: 280px;
+    --text-color-primary: #333;
+    --text-color-secondary: #777;
+    --background-color: #f8f9fa; /* Light background for the page */
+  }
+  
+  body { /* Optional: basic body styling */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--text-color-primary);
+  }
+  
+  .re-grid-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    width: 100%;
+    max-width: 1280px; /* Max width of the entire component */
+    margin: 60px auto; /* Centering and top/bottom margin */
+    padding: 0 20px; /* Padding for smaller screens */
+    box-sizing: border-box;
+    margin-top: 10rem;
+  }
+  
+  .re-grid-left {
+    flex: 0 0 320px; /* Fixed width for the text section */
+    margin-top: 0; /* Removed specific margin-top, handled by wrapper */
+  }
+  
+  .re-grid-left h2 {
+    font-size: 2.2rem; /* Slightly larger for emphasis */
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.3;
+    color: var(--text-color-primary);
+  }
+  
+  .re-grid-left p {
+    font-size: 1rem;
+    color: var(--text-color-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  .re-grid-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start; /* Aligns grid to the start if it's narrower */
+  }
+  
+  .re-grid {
+    display: flex;
+    gap: var(--grid-gap);
+  }
+  
+  .re-grid-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--grid-gap);
+  }
+  
+  /* Card base styles */
+  .re-card {
+    position: relative;
+    width: var(--card-width);
+    height: var(--card-unit-height); /* Default height for 1-span cards */
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px; /* Slightly more rounded corners */
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: flex-end; /* Aligns content to bottom */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .re-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Specific height classes for cards */
+  .re-card.re-card-span-2 {
+    height: calc(2 * var(--card-unit-height) + var(--grid-gap));
+  }
+  
+  .re-card.re-card-span-3 {
+    height: calc(3 * var(--card-unit-height) + (2 * var(--grid-gap)));
+  }
+  
+  .re-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%, /* More subtle gradient start */
+      rgba(0, 0, 0, 0.1) 40%,
+      rgba(0, 0, 0, 0.65) 100% /* Darker at the bottom for text readability */
+    );
+    z-index: 1;
+    transition: background-color 0.3s ease;
+  }
+  
+  .re-card:hover .re-card-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0.75) 100%
+    );
+  }
+  
+  .re-card-content {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    padding: 20px; /* Adjusted padding */
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .re-card-properties {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  
+  .re-card-title {
+    font-size: 1.4rem; /* Slightly larger title */
+    font-weight: 600;
+    margin-bottom: 24px; /* Space before "MORE DETAILS" */
+    line-height: 1.2;
+  }
+  
+  .re-card-details {
+    font-size: 0.9rem;
+    font-weight: 600; /* Bolder */
+    letter-spacing: 0.5px; /* Reduced letter spacing */
+    opacity: 1;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .re-card-arrow {
+    margin-left: 8px;
+    font-size: 1rem; /* Adjusted arrow size */
+    transition: transform 0.2s ease;
+  }
+  
+  .re-card-details:hover .re-card-arrow {
+      transform: translateX(4px);
+  }
+  
+  /* --- Responsiveness --- */
+  
+  /* Tablet and larger mobile devices (e.g., < 1024px) */
+  @media (max-width: 1023px) {
+    .re-grid-wrapper {
+      flex-direction: column;
+      align-items: center;
+      gap: 30px; /* Reduced gap when stacked */
+      margin-top: 40px;
+    }
+  
+    .re-grid-left {
+      flex: 0 0 auto; /* Allow it to size based on content */
+      width: 100%;
+      max-width: 600px; /* Limit text width for readability */
+      text-align: center; /* Center text when stacked */
+      margin-bottom: 20px; /* Space between text and grid */
+    }
+  
+    .re-grid-left h2 {
+      font-size: 2rem;
+    }
+  
+    .re-grid-right {
+      justify-content: center; /* Center the grid columns container */
+      width: 100%;
+    }
+    .re-grid {
+      /* Allow columns to wrap if they don't fit */
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+  
+  /* Smaller tablets and mobile devices (e.g., < 768px) */
+  @media (max-width: 767px) {
+    :root {
+      /* Adjust card width for smaller screens if needed, or let them stack */
+      /* --card-width: 260px; */ 
+    }
+    .re-grid {
+      flex-direction: column; /* Stack the original columns */
+      align-items: center; /* Center the stacked columns */
+    }
+    .re-grid-col {
+       width: var(--card-width); /* Each column (now a row) takes card width */
+       max-width: 100%;
+    }
+    .re-grid-left h2 {
+      font-size: 1.8rem;
+    }
+    .re-grid-left p {
+      font-size: 0.95rem;
+    }
+  }
+  
+  /* Small mobile devices (e.g., < 480px) */
+  @media (max-width: 479px) {
+    :root {
+      --card-unit-height: 180px; /* Slightly smaller base height for small screens */
+      --grid-gap: 16px;
+    }
+    .re-grid-wrapper {
+      padding: 0 15px; /* Reduce padding */
+      margin-top: 30px;
+    }
+    .re-grid-left h2 {
+      font-size: 1.6rem;
+    }
+    .re-grid-left p {
+      font-size: 0.9rem;
+    }
+    .re-grid-col {
+      width: 100%; /* Each column (now effectively a card container) takes full available width */
+    }
+    .re-card,
+    .re-card.re-card-span-2,
+    .re-card.re-card-span-3 {
+      width: 100%; /* Cards take full width of their .re-grid-col container */
+    }
+    .re-card-title {
+      font-size: 1.2rem;
+    }
+    .re-card-properties, .re-card-details {
+      font-size: 0.85rem;
+    }
+  }

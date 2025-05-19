@@ -114,8 +114,6 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
       case "furnishing":
       case "projectStatus":
       case "listedBy":
-      case "superBuiltupArea":
-      case "carpetArea":
         if (!value || value === "") return "This field is required";
         break;
       case "price":

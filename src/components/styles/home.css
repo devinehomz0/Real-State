@@ -1,18 +1,214 @@
-.listings{
-    display:none
+.listings {
+  display: none;
 }
-.text_content{
+.text_content {
+  text-align: center;
+  margin-top: 6rem;
+}
+.text_content h1 {
+  font-family: roboto;
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+.text_content p {
+  font-size: 1.3rem;
+  font-family: roboto;
+  color: rgba(53, 53, 53, 0.749);
+}
+
+.hero-container-tint {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  clip-path: polygon(0 10%, 100% 0, 100% 90%, 0 100%);
+padding-top: 10rem;
+}
+
+.hero-overlay-tint {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+background-color: #0042747c;
+
+}
+
+.hero-content-tint {
+  position: relative; /* Place content above overlay */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  color: white;
+}
+
+.hero-text-tint {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.hero-subtext-tint {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.hero-boxes-tint {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.hero-box-tint {
+  width: 150px;
+  height: 150px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.2rem;
+  transition: transform 0.5s ease-in-out;
+}
+
+.animate-box-tint {
+  transform: translateY(20px); /* Move up/down by 20px */
+}
+.hero-content-tint .p{
+    font-size: 1.5rem;
+    width: 700px;
     text-align: center;
-    margin-top: 6rem;
+    font-weight: 300;
+    /* margin-top: -2rem; */
+    margin-bottom: 2rem;
 }
-.text_content h1{
-    font-family: roboto;
+.hor-main{
+    background-color: transparent !important;
+}
+.hor-main .features{
+    background-color: #004274;
+    width: 300px;
+    height: 200px;
+}
+.hor-main .title{
+    padding-bottom: 0.5rem !important;
+}
+.tint_form{
+    display: flex !important;
+    flex-direction: row;
+}
+.tint_form .left-hero-content{
+    width: 600px;
+    text-align: left;
+}
+.left-hero-content p{
+    width: 500px;
+    font-size: 1.1rem;
+    font-weight: 300;
+
+}
+.left-hero-content h2{
     font-size: 2.5rem;
-    font-weight: 500;
+    font-weight: 400;
 }
-.text_content p{
-    font-size: 1.3rem;
-    font-family: roboto;
-    color:rgba(53, 53, 53, 0.749);
-    
+.enquiryForm{
+    background: white;
+    width: 500px;
+padding-top: 2.5rem;
+padding-bottom: 2.5rem;
+}
+.enquiryForm input,select{
+    width: 400px;
+    margin: .5rem;
+}
+
+.enquiryForm button{
+    background-color: #004274;;
+    border: none;
+    color:white;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    width: 400px;
+    margin-top: 0.8rem;
+}
+
+.tint_enquiry_main{
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+}
+.what_enq{
+    color: lightgreen !important;
+    background-color: white !important;
+    border: 1px solid lightgreen !important;
+    margin-top: 1rem !important;
+    display: block;
+    width: 400px;
+    margin: auto;
+    padding: 0.5rem;
+
+}
+.what_enq:hover{
+    color:white !important;
+    background-color: lightgreen !important;
+}
+.what{
+    font-size: 1.2rem;
+    position:relative;
+    top: 0.2rem;
+
+}
+@media screen and (max-width:600px){
+    .tint_form{
+        padding-top: 5rem;
+flex-direction: column;
+        padding-bottom: 5rem !important;
+    }
+    .tint_enquiry_main{
+        clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 100%) !important;
+    }
+   .enquiryForm{
+    width: 300px;
+    margin: auto;
+    margin-bottom: 5rem;
+    z-index: 1000;
+
+   }
+   .enquiryForm input , .enquiryForm select , .enquiryForm a , .enquiryForm button {
+    width: 280px;
+   }
+   .left-hero-content h2{
+font-size: 1.5rem;
+width: 300px;margin: auto;
+
+   }
+   .left-hero-content p{
+    font-size: 0.8rem;
+    width: 300px;
+    margin: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+   }
+   .hero-content-tint{
+height: 1000px;
+   }
+   .p{margin: auto;
+    margin-top: 10rem;
+    font-size: 1rem !important;
+    width: 300px !important;   
+   }
+ .hero-text-tint{
+    margin-bottom: -5rem !important;
+ }
+   .hero-container-tint{
+    height: 1350px !important;
+    padding-top: 10rem;
+    clip-path: polygon(0 5%, 100% 0, 100% 95%, 0 100%);
+
+   }
 }
