@@ -232,7 +232,7 @@ const HorListingCarousel = ({ listings = listingsData }) => {
       clearInterval(intervalRef.current);
       return;
     }
-    intervalRef.current = setInterval(handleNext, 4000); // Use handleNext from useCallback
+    intervalRef.current = setInterval(handleNext, 2000); // Use handleNext from useCallback
     return () => clearInterval(intervalRef.current);
   }, [
     current,

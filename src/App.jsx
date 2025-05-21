@@ -5,6 +5,7 @@ import Inquiries from "./components/admin/Inquiries";
 import CreateProperty from "./components/admin/CreateProperty";
 import AdminMain from "./components/admin/admin";
 import HomePage from "./pages/Home";
+import AllListings from "./pages/Listings";
 function App() {
   return (
     <Router>
@@ -17,6 +18,7 @@ function App() {
         </Route>
         <Route path="/" element={<AdminMain></AdminMain>}></Route>
         <Route path="/home" element={<HomePage></HomePage>}></Route>
+        <Route path="/alllistings" element={<AllListings></AllListings>}></Route>
       </Routes>
     </Router>
   );

@@ -571,3 +571,9 @@ textarea {
   color:white;
   background-color: black;
 }
+
+
+.property-form select{
+width: 100%;
+margin-top: 0.2rem !important;
+}

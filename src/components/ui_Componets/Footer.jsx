@@ -10,11 +10,12 @@ import {
   FaYoutube,
   FaAngleUp,
 } from "react-icons/fa";
-
+import { useScroll } from "../../config/ScrollProvider";
 const Footer = () => {
   const handleBackToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  const { contactSectionRef } = useScroll(); // Get the ref from context
 
   return (
     <footer className="site-footer">
@@ -33,7 +34,7 @@ const Footer = () => {
               </a>
             </div>
 
-            <div className="footer-column">
+            <div className="footer-column" id="contact" ref={contactSectionRef}>
               <h4>Contact Us</h4>
               <ul className="contact-list">
                 <li>

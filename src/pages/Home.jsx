@@ -8,6 +8,7 @@ import HorizontalListing from "../components/ui_Componets/horizontalListing";
 import RealEstateGrid from "../components/ui_Componets/RealEstateGrid";
 import EnquiryForm from "../components/ui_Componets/EnquiryForm";
 import Footer from "../components/ui_Componets/Footer";
+import DevineHomzLoader from "../components/ui_Componets/Loader";
 const HomePage = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,27 +33,18 @@ const HomePage = () => {
     fetchListings();
   }, []);
 
-  // if (loading) return <p>Loading...</p>;
 
+  if (loading) {
+    return <DevineHomzLoader isLoading={true} />;
+  }
   return (
     <div>
       <Hero></Hero>
       <Features></Features>
-      <HorizontalListing></HorizontalListing>
+      <HorizontalListing listing={listings}></HorizontalListing>
       <RealEstateGrid></RealEstateGrid>
       <EnquiryForm></EnquiryForm>
-      <Footer></Footer>
-      <div className="listings">
-        <ul>
-          {listings.map((listing) => (
-            <li key={listing.id}>
-              <strong>{listing.title}</strong> - {listing.description}
-              {/* Add more fields as needed */}
-            </li>
-          ))}
-        </ul>
-      </div>
-      
+      <Footer></Footer>      
     </div>
   );
 };

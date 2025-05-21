@@ -1,0 +1,43 @@
+/* src/components/DevineHomzLoader.css */
+
+.devine-homz-loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #004274;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's on top of everything */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #FFFFFF; /* White text */
+  }
+  
+  .devine-homz-loader-content {
+    text-align: center;
+  }
+  
+  .devine-homz-spinner {
+    border: 8px solid rgba(255, 255, 255, 0.2); /* Lighter track for the spinner */
+    border-left-color: #FFFFFF; /* White for the spinning part */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: devineHomzSpin 1s linear infinite;
+    margin: 0 auto 20px auto; /* Center and space below spinner */
+  }
+  
+  @keyframes devineHomzSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .devine-homz-loader-text {
+    font-size: 1.8em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    margin-top: 20px;
+  }
