@@ -92,9 +92,14 @@ function ListingsDisplay({ listings, onEdit, fetchListings }) {
                 label: "Price:",
                 value: listing.price
                   ? `₹${Number(listing.price).toLocaleString()}`
-                  : "-",
+                  : "-", // If price is not set, display "-"
                 strong: true,
+                suffix:
+                  listing.price && listing.priceUnit
+                    ? ` ${listing.priceUnit}`
+                    : "", // Add priceUnit as suffix if price and unit exist
               })}
+
               {/* BHK, Bedrooms, Bathrooms */}
               <div className="listing-row">
                 {Field({

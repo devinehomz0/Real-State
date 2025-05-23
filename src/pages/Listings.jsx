@@ -46,6 +46,7 @@ const ListingCard = ({ listing, onEdit, onDelete }) => {
     bathrooms,
     superBuiltupArea,
     featured,
+    priceUnit,
   } = listing;
   const nextImage = (e) => {
     e.stopPropagation();
@@ -112,10 +113,12 @@ const ListingCard = ({ listing, onEdit, onDelete }) => {
           {type ? type.toUpperCase() : "PROPERTY"}
         </div>
         <div className="listing-card-price-container">
-          <span className="listing-card-price">{priceDisplay}</span>
-          {priceSqFtDisplay && (
+          <span className="listing-card-price">
+            {priceDisplay} {listing.priceUnit}
+          </span>
+          {/* {priceSqFtDisplay && (
             <span className="listing-card-price-sqft">{priceSqFtDisplay}</span>
-          )}
+          )} */}
         </div>
         <h3 className="listing-card-title" title={title}>
           {title}
@@ -144,7 +147,6 @@ const ListingCard = ({ listing, onEdit, onDelete }) => {
           )}
         </div>
       </div>
- 
     </div>
   );
 };

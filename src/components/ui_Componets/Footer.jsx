@@ -25,13 +25,12 @@ const Footer = () => {
             <div className="footer-column">
               <h4>About Site</h4>
               <p>
-                YourCompany is a premier real estate service dedicated to
-                finding your perfect property. We combine modern aesthetics with
-                tasteful simplicity and cutting-edge technology.
+                Divine Homz is your trusted partner in real estate, dedicated to
+                helping you seamlessly buy or sell your perfect property. We
+                blend modern design with tasteful simplicity and leverage
+                cutting-edge technology to make your property journey
+                effortless.
               </p>
-              <a href="/about-us" className="footer-link read-more">
-                Read more
-              </a>
             </div>
 
             <div className="footer-column" id="contact" ref={contactSectionRef}>
@@ -39,20 +38,20 @@ const Footer = () => {
               <ul className="contact-list">
                 <li>
                   <FaMapMarkerAlt className="contact-icon" />
-                  <span>774 NE 84th St Miami, FL 33879</span>
+                  <span>
+                    38, Panchatara Society, Manish Nagar, Somalwada, Nagpur,
+                    Maharashtra 440015, India
+                  </span>
                 </li>
                 <li>
                   <FaPhoneAlt className="contact-icon" />
-                  <span>+1 (800) 990 8877</span>
+                  <span>(+91) 90110 67863</span>
                 </li>
                 <li>
                   <FaEnvelope className="contact-icon" />
-                  <span>info@yourcompany.com</span>
+                  <span>prabodh_j@yahoo.com</span>
                 </li>
               </ul>
-              <a href="/contact" className="footer-link contact-button">
-                Contact us
-              </a>
             </div>
 
             <div className="footer-column">
@@ -64,23 +63,8 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="/listings" className="footer-link">
+                  <a href="/alllistings" className="footer-link">
                     Property Listings
-                  </a>
-                </li>
-                <li>
-                  <a href="/agents" className="footer-link">
-                    Find an Agent
-                  </a>
-                </li>
-                <li>
-                  <a href="/blog" className="footer-link">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="/faq" className="footer-link">
-                    FAQ
                   </a>
                 </li>
               </ul>
@@ -90,29 +74,19 @@ const Footer = () => {
               <h4>Our Services</h4>
               <ul className="footer-links-list">
                 <li>
-                  <a href="/services/buying" className="footer-link">
-                    Buying Properties
-                  </a>
+                  <a className="footer-link">Buying Properties</a>
                 </li>
                 <li>
-                  <a href="/services/selling" className="footer-link">
-                    Selling Properties
-                  </a>
+                  <a className="footer-link">Selling Properties</a>
                 </li>
                 <li>
-                  <a href="/services/renting" className="footer-link">
-                    Renting Properties
-                  </a>
+                  <a className="footer-link">Renting Properties</a>
                 </li>
                 <li>
-                  <a href="/services/management" className="footer-link">
-                    Property Management
-                  </a>
+                  <a className="footer-link">Property Management</a>
                 </li>
                 <li>
-                  <a href="/services/investment" className="footer-link">
-                    Investment Advice
-                  </a>
+                  <a className="footer-link">Investment Advice</a>
                 </li>
               </ul>
             </div>
@@ -124,22 +98,16 @@ const Footer = () => {
         <div className="container">
           <div className="footer-bottom-content">
             <p className="copyright">
-              © {new Date().getFullYear()} YourCompany - All rights reserved
+              © {new Date().getFullYear()} DevineHomz - All rights reserved
             </p>
             <div className="footer-legal-links">
-              <a href="/privacy-policy" className="footer-link">
-                Privacy
-              </a>
-              <a href="/terms-conditions" className="footer-link">
-                Terms and Conditions
-              </a>
-              <a href="/contact" className="footer-link">
-                Contact
-              </a>
+              <a className="footer-link">Privacy</a>
+              <a className="footer-link">Terms and Conditions</a>
+              <a className="footer-link">Contact</a>
             </div>
             <div className="social-icons">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/share/16GEm1k9Nw/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -147,17 +115,9 @@ const Footer = () => {
               >
                 <FaFacebookF />
               </a>
+
               <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Twitter"
-                className="social-icon-link"
-              >
-                <FaTwitter />
-              </a>
-              <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/prabodh-kumar-jangle-40a3bb30?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
@@ -166,7 +126,7 @@ const Footer = () => {
                 <FaLinkedinIn />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/devine._.homz?igsh=MXgzcGpibTgxdmc4Zw=="
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -175,7 +135,7 @@ const Footer = () => {
                 <FaInstagram />
               </a>
               <a
-                href="https://youtube.com"
+                href="https://youtube.com/@prabodhjangle5205?si=GkxwlB0vrp_K8_5I"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="YouTube"
