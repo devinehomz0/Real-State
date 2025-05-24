@@ -12,76 +12,9 @@ import {
   faRulerCombined,
 } from "@fortawesome/free-solid-svg-icons";
 import "../styles/HorListingCarousel.css"; // Your CSS file
+import { FaRupeeSign } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-// Updated listings data as per your last snippet
-const listingsData = [
-  {
-    id: 1,
-    title: "Modern apartment on the bay",
-    price: "From $4,500/mo",
-    featured: true,
-    type: "APARTMENT",
-    for: "FOR RENT",
-    beds: 4,
-    baths: 2,
-    area: "1200 Sq Ft",
-    image:
-      "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 2,
-    title: "Renovated studio",
-    price: "$540,000",
-    featured: true,
-    type: "STUDIO",
-    for: "FOR SALE",
-    beds: 4,
-    baths: 2,
-    area: "1200 Sq Ft",
-    image:
-      "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 3,
-    title: "Contemporary apartment",
-    price: "$13,000/mo",
-    featured: true,
-    type: "APARTMENT",
-    for: "FOR RENT",
-    beds: 4,
-    baths: 2,
-    area: "1200 Sq Ft",
-    image:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 4,
-    title: "Awesome family home",
-    price: "$570,000",
-    featured: false,
-    type: "STUDIO",
-    for: "FOR SALE",
-    beds: 4,
-    baths: 2,
-    area: "3400 Sq Ft",
-    image:
-      "https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 5,
-    title: "Renovated studio 2", // Made title unique for clarity
-    price: "$545,000",
-    featured: true,
-    type: "STUDIO",
-    for: "FOR SALE",
-    beds: 4,
-    baths: 2,
-    area: "1250 Sq Ft",
-    // Using a different image for variety
-    image:
-      "https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&w=400&q=80",
-  },
-];
 
 // Defines how many cards are visible and the gap based on screen width
 const getResponsiveSettings = (width, numListings) => {
@@ -127,7 +60,7 @@ const HorListingCarousel = ({ listings = listingsData }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const intervalRef = useRef();
   const outerListRef = useRef(null);
-
+  const navigate = useNavigate();
   const [slideTransformMultiplier, setSlideTransformMultiplier] = useState(0);
   const [cardStyleWidthPercentage, setCardStyleWidthPercentage] = useState(0);
 
@@ -278,6 +211,10 @@ const HorListingCarousel = ({ listings = listingsData }) => {
 
   const shouldDisableNav = listings.length <= carouselConfig.visibleCards;
 
+
+  const navigateToListing = (listing) => {
+    navigate(`/listing`, { state: { listing } });
+  };
   return (
     <div className="hor_listing">
       <div className="carousel-header">
@@ -341,30 +278,50 @@ const HorListingCarousel = ({ listings = listingsData }) => {
                     : "100%",
               }}
               key={`${listing.id}-${idx}-${listing.title}`}
-            >
+              onClick={()=>{navigateToListing(listing)}}>
               <div className="carousel-img-wrap">
-                <img src={listing.image} alt={listing.title} />
+                <img src={listing.imageUrls[0]} alt={listing.title} />
                 <div className="carousel-labels">
                   {listing.featured && (
                     <span className="label featured">FEATURED</span>
                   )}
-                  <span className="label for">{listing.for}</span>
+                  <span className="label for">{listing.status}</span>
                 </div>
-                <div className="carousel-price">{listing.price}</div>
+                <div className="carousel-price">
+                  <FaRupeeSign className="ruppeSign"></FaRupeeSign>{" "}
+                  {listing.price}&nbsp;{listing.priceUnit}
+                </div>
               </div>
-              <div className="carousel-title">{listing.title}</div>
+              <div className="carousel-title">
+                {listing.title.length > 30
+                  ? listing.title.slice(0, 50) + "..."
+                  : listing.title}
+              </div>
               <div className="carousel-info">
                 <span>
-                  <FontAwesomeIcon icon={faBed} /> {listing.beds}
+                  <FontAwesomeIcon icon={faBed} />{" "}
+                  <span className="span_icons">{listing.bedrooms}</span>
                 </span>
                 <span>
-                  <FontAwesomeIcon icon={faBath} /> {listing.baths}
+                  <FontAwesomeIcon icon={faBath} />{" "}
+                  <span className="span_icons"> {listing.bathrooms}</span>
                 </span>
                 <span>
-                  <FontAwesomeIcon icon={faRulerCombined} /> {listing.area}
+                  <FontAwesomeIcon icon={faRulerCombined} />{" "}
+                  <span className="span_icons">
+                    {" "}
+                    {listing.superBuiltupArea}
+                  </span>
                 </span>
               </div>
-              <div className="carousel-type">{listing.type}</div>
+              <div className="carousel-type type_car">{listing.type}</div>
+              <div className="carousel-type space">
+                {listing.address.length > 30
+                  ? listing.address.slice(0, 30) + "..."
+                  : listing.address}
+                <br></br>
+                {listing.city}, &nbsp;{listing.state}
+              </div>
             </div>
           ))}
         </div>

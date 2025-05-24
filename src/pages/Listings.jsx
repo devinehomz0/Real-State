@@ -26,12 +26,16 @@ import {
   FaTrash,
 } from "react-icons/fa";
 import { BsTextareaResize } from "react-icons/bs";
-
-const LISTINGS_PER_PAGE_INITIAL = 10;
-const LISTINGS_PER_PAGE_MORE = 10;
+import { useNavigate } from "react-router-dom";
+const LISTINGS_PER_PAGE_INITIAL = 20;
+const LISTINGS_PER_PAGE_MORE = 20;
 
 // --- ListingCard Component (Assumed OK) ---
 const ListingCard = ({ listing, onEdit, onDelete }) => {
+  const navigate = useNavigate();
+  const navigateToListing = (listing) => {
+    navigate(`/listing`, { state: { listing } });
+  };
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const {
     imageUrls = [],
@@ -77,7 +81,7 @@ const ListingCard = ({ listing, onEdit, onDelete }) => {
   }
   return (
     <div className="listing-card-item">
-      <div className="listing-card-image-wrapper">
+      <div className="listing-card-image-wrapper" onClick={()=>{navigateToListing(listing)}}>
         {imageUrls && imageUrls.length > 0 ? (
           <img
             src={imageUrls[currentImageIndex]}
@@ -177,7 +181,8 @@ function ListingsDisplayComponent({
   );
 }
 
-function AllListings() {
+function AllListings({ admin }) {
+  console.log(admin)
   console.log("AllListings RENDER START");
   const [allListingsData, setAllListingsData] = useState([]);
   const [displayedListings, setDisplayedListings] = useState([]);
@@ -186,12 +191,10 @@ function AllListings() {
   const [lastVisibleDoc, setLastVisibleDoc] = useState(null); // Renamed for clarity
   const [hasMore, setHasMore] = useState(true);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
-
   const [showFallbackMessage, setShowFallbackMessage] = useState(false);
   const [isUsingFallbackQuery, setIsUsingFallbackQuery] = useState(false);
   const isInitialRender = useRef(true);
@@ -406,30 +409,7 @@ function AllListings() {
       isUsingFallbackQuery
     );
     if (hasMore && !loading && !loadingMore) {
-      // The fetchData function needs to be callable here with "isLoadMore = true"
-      // We need a way to call the fetchData defined in the useEffect or redefine it here
-      // For now, let's simplify: LoadMore will re-trigger the main useEffect by changing a dummy state, or call a useCallback version
-      // This is not ideal. Let's make fetchData a useCallback.
-
-      // This is getting complex. The core issue is that fetchData depends on states that might change.
-      // A better approach might be to make `fetchData` a `useCallback` that takes all it needs.
-      // But then the main useEffect needs to call it.
-      // Re-evaluating the fetchData placement.
-
-      // Let's go back to fetchListingsData as a useCallback
-      // and the useEffect calls it with current filter states. This seems more standard.
-      // The previous attempt (your last provided code) was closer. The issue might have been
-      // subtle in the useCallback dependencies or how the simple fetch flag was managed.
-
-      // For THIS current structure, handleLoadMore cannot easily call the fetchData inside useEffect.
-      // This implies the fetchData logic should be a top-level useCallback.
-
-      // --> The structure from your *last* provided code was actually on a better track.
-      // --> The error was likely in subtle dependency array management or the initial simple fetch logic.
-      // --> Let's revert to that structure and debug it carefully.
-
-      // For now, this load more will NOT work with fetchData inside useEffect.
-      // This signals a structural refactor is needed back to what you had.
+      
       console.error(
         "Load More needs refactoring with current fetchData structure"
       );
@@ -499,20 +479,13 @@ function AllListings() {
     // This also indicates fetchData should be a top-level useCallback.
   };
 
-  console.log(
-    "RENDER: Displayed:",
-    displayedListings.length,
-    "Loading:",
-    loading,
-    "InitialLoadDone:",
-    initialLoadDone
-  );
+
 
   return (
     <div>
-      <Navbar />
+     {!admin&& <Navbar />}
       <div className="listings-page-container">
-        <div className="filters-container">
+        <div className={`filters-container ${admin==false?"":"admin_listing"}`}>
           <div className="search-bar">
 
             {" "}
@@ -521,6 +494,7 @@ function AllListings() {
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              className="input"
             />{" "}
             <button className="search-icon-button">
               <FaSearch />
@@ -602,7 +576,7 @@ function AllListings() {
           </p>
         )}
       </div>
-      <Footer />
+    { !admin && <Footer />}
     </div>
   );
 }

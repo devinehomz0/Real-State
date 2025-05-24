@@ -106,10 +106,7 @@ export default function EnquiryForm({ propertyInfo }) {
               <br />
               <button type="submit">
                 {submitting ? "Submitting..." : "Submit"}
-              </button> <br />
-              <a className="what_enq">
-<FaWhatsapp className="what"></FaWhatsapp> WhatsApp
-              </a>
+              </button> 
             </form>
           </div>
         </div>

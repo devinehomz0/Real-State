@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs ,limit,query} from "firebase/firestore";
 import { db } from "../config/firebase"; // adjust the path to your firebase.js
 import "../components/styles/home.css"
 import Hero from "../components/ui_Componets/Hero";
@@ -17,12 +17,15 @@ const HomePage = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "listings")); // "listings" is your collection name
+        // Create a query with a limit of 8
+        const listingsQuery = query(collection(db, "listings"), limit(8));
+        const querySnapshot = await getDocs(listingsQuery);
         const data = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setListings(data);
+        console.log(data);
       } catch (error) {
         console.error("Error fetching listings:", error);
       } finally {
@@ -41,7 +44,7 @@ const HomePage = () => {
     <div>
       <Hero></Hero>
       <Features></Features>
-      <HorizontalListing listing={listings}></HorizontalListing>
+      {!loading && <HorizontalListing listings={listings}></HorizontalListing>}
       <RealEstateGrid></RealEstateGrid>
       <EnquiryForm></EnquiryForm>
       <Footer></Footer>      

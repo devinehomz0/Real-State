@@ -423,26 +423,49 @@
   border: none;
   margin-bottom: 2rem;
 }
-@media screen and  (max-width:600px){
-.filters-container select{
-  margin-top: -1rem;
-  width: 100px !important;
-  /* display: none; */
-  position: sticky;
-}
-.search-icon-button{
-  position:relative;
-  left: -1.8rem;
+@media screen and (max-width: 600px) {
+  .filters-container select {
+    margin-top: -1rem;
+    width: 100px !important;
+    /* display: none; */
+    position: sticky;
+  }
+  .search-icon-button {
+    position: relative;
+    /* left: -1.8rem; */
+    height: 44px;
+    top: 0.26rem;
+    border-radius: 0.5rem !important;
+  }
+  .search-bar {
+    min-width: 200px !important;
+  }
+  .search-bar input {
+    border: 1px solid lightgrey !important;
+    border-radius: 0.5rem !important;
+  }
+  .filter-select {
+    font-size: 0.7rem;
+    min-width: 100px !important;
+  }
+} .search-icon-button {
+  position: relative;
+  left: -0.5rem;
   height: 44px;
   top: 0.26rem;
+  border-radius: 0.5rem !important;
+}.filter-select {
+  min-width: 100px !important;  border-radius: 0.5rem !important;
+
 }
+.search-bar input{
+  border: 1px solid lightgrey !important;border-radius: 0.5rem !important;
 }
-.fallback-message{
+.fallback-message {
   text-align: center;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-
 
 .btn-select {
   border: 1px solid #ccc;
@@ -459,8 +482,11 @@
 }
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -471,7 +497,7 @@
   padding: 32px 24px;
   border-radius: 8px;
   max-width: 90vw;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
 .price-input-group {
@@ -491,7 +517,8 @@
   color: #d32f2f;
   font-size: 13px;
   margin-top: 3px;
-}.form-error-summary {
+}
+.form-error-summary {
   border: 1px solid #d32f2f; /* Material Design error color */
   padding: 10px 15px;
   margin-bottom: 20px;
@@ -532,8 +559,85 @@
   color: #125699; /* Darker blue on hover/focus */
 }
 
-.form-error { /* Your existing style */
+.form-error {
+  /* Your existing style */
   color: #d32f2f;
   font-size: 13px;
   margin-top: 3px;
+} /* --- Styles for ListingCard Image Carousel Arrows --- */
+
+/* Base styles for the arrows (you might already have some of these) */
+.listing-card-image-wrapper .carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Semi-transparent background for visibility */
+  color: white;
+  border: none;
+  border-radius: 50%; /* Make them circular for a nicer look */
+  width: 30px; /* Fixed width */
+  height: 30px; /* Fixed height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10; /* Ensure they are above the image */
+  opacity: 0; /* Hidden by default - will be shown on hover (desktop) or always (mobile) */
+  transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  font-size: 1rem; /* Adjust icon size if needed */
+}
+
+/* Show arrows on hover for desktop */
+.listing-card-image-wrapper:hover .carousel-arrow {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.5); /* Darker on hover */
+}
+
+.listing-card-image-wrapper .prev-arrow {
+  left: 8px; /* Distance from the left edge */
+}
+
+.listing-card-image-wrapper .next-arrow {
+  right: 8px; /* Distance from the right edge */
+}
+
+.listing-card-image-wrapper .carousel-arrow svg {
+  /* Style the icon itself */
+  display: block; /* Helps with alignment */
+}
+
+/* --- Media Query for Mobile Devices --- */
+@media (max-width: 768px) {
+  /* Common breakpoint for tablets and below */
+  .listing-card-image-wrapper .carousel-arrow {
+    opacity: 1 !important; /* ALWAYS VISIBLE on mobile - !important can be used if other styles are too specific */
+    background-color: rgba(0, 0, 0, 0.4); /* Ensure good contrast on mobile */
+
+    /* Make tap targets slightly larger for mobile if needed */
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem; /* Slightly larger icon */
+  }
+
+  /* Adjust positioning if they are too close to the edge on smaller screens */
+  .listing-card-image-wrapper .prev-arrow {
+    left: 5px;
+  }
+
+  .listing-card-image-wrapper .next-arrow {
+    right: 5px;
+  }
+}
+
+/* Optional: Style for when an arrow is focused (accessibility) */
+.listing-card-image-wrapper .carousel-arrow:focus-visible {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.6);
+  outline: 2px solid skyblue; /* Or your theme's focus color */
+  outline-offset: 2px;
 }

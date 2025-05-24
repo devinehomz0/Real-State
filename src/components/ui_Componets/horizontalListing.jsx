@@ -1,6 +1,6 @@
 import HorListingCarousel from "./HorListingCarousel";
 import heroBg from "../../assets/download.jpg";
-export default function HorizontalListing() {
+export default function HorizontalListing({listings}) {
     return (
       <div className="main_horizontal_listing">
         <div className="text_content">
@@ -12,7 +12,7 @@ export default function HorizontalListing() {
           </p>
         </div>
         <div className="hor_listings">
-          <HorListingCarousel></HorListingCarousel>
+          <HorListingCarousel listings={listings}></HorListingCarousel>
         </div>
         <div
           className="hero-container-tint"

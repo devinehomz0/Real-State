@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "./navbar";
+import { useScroll } from "../../config/ScrollProvider";
 import "../styles/hero.css";
 
 let images = [
@@ -17,7 +18,12 @@ export default function Hero() {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+const { scrollToContact } = useScroll(); // Get the scroll function
 
+    const handleContactClick = (event) => {
+      event.preventDefault(); // Prevent default anchor jump
+      scrollToContact(); // Call the function from context
+    };
   return (
     <div className="Hero_main">
       <div className="hero-bg-wrapper">
@@ -43,17 +49,22 @@ export default function Hero() {
       <div className="hero-content">
         <Navbar />
         <div className="hero-center-content">
-          <h1>Welcome to <br className="br_welcome"/> Devine Homz</h1>
+          <h1>
+            Welcome to <br className="br_welcome" /> Devine Homz
+          </h1>
           <p>
-            Devine Homz is dedicated to helping you find the perfect property, <br className="br_p"/>
-                      whether you're buying, selling, or renting. Experience seamless real <br />
+            Devine Homz is dedicated to helping you find the perfect property,{" "}
+            <br className="br_p" />
+            whether you're buying, selling, or renting. Experience seamless real{" "}
+            <br />
             estate solutions with our expert team.
           </p>
-
         </div>
         <div className="hero_buttons">
-          <a href="">Explore Listings</a>
-          <a href="">Contact Us</a>
+          <a href="/alllistings">Explore Listings</a>
+          <a href="#contact-us-section" onClick={handleContactClick}>
+            Contact Us
+          </a>
         </div>
       </div>
     </div>

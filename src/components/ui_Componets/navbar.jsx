@@ -10,7 +10,12 @@ export default function Navbar() {
       scrollToContact(); // Call the function from context
     };
     // Function to handle opening/closing the side panel
-    const toggleSidePanel = () => setSidePanelOpen((open) => !open);
+  const toggleSidePanel = () => setSidePanelOpen((open) => !open);
+  const whatsappNumber = "9011067863";
+  const message = encodeURIComponent(
+    "Hi there, I am interested in your listings!"
+  );
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
   return (
     <div className="Navbar_main">
       <div className="navbar_main">
@@ -18,12 +23,15 @@ export default function Navbar() {
           <h2>Devine Homz</h2>
         </div>
         <div className="options">
-          <a href="">Home</a>
+          <a href="/">Home</a>
           <a href="/alllistings">Listings</a>
-          <a href="">About Us</a>
-          <a href="#contact-us-section" onClick={handleContactClick}>Contacts</a>
-              </div>
-              <div className="mobile-menu-icon mobile-only" onClick={toggleSidePanel}>
+
+          <a href="#contact-us-section" onClick={handleContactClick}>
+            Contacts
+          </a>
+          <a  href={whatsappUrl}  target="_blank"  rel="noopener noreferrer"  className="whatsapp-link">WhatsApp</a>
+        </div>
+        <div className="mobile-menu-icon mobile-only" onClick={toggleSidePanel}>
           <span />
           <span />
           <span />
@@ -32,15 +40,26 @@ export default function Navbar() {
 
       {/* Side Panel for Mobile */}
       <div className={`side-panel ${sidePanelOpen ? "open" : ""}`}>
-        <div className="close-btn" onClick={toggleSidePanel}>&times;</div>
-        <a href="/home" onClick={toggleSidePanel}>Home</a>
-        <a href="/admin" onClick={toggleSidePanel}>Listings</a>
-        <a href="#" onClick={toggleSidePanel}>About Us</a>
-        <a href="#contact" onClick={toggleSidePanel}>Contacts</a>
+        <div className="close-btn" onClick={toggleSidePanel}>
+          &times;
+        </div>
+        <a href="/home" onClick={toggleSidePanel}>
+          Home
+        </a>
+        <a href="/admin" onClick={toggleSidePanel}>
+          Listings
+        </a>
+        <a href="#" onClick={toggleSidePanel}>
+          About Us
+        </a>
+        <a href="#contact" onClick={toggleSidePanel}>
+          Contacts
+        </a>
       </div>
       {/* Overlay for closing side panel */}
-      {sidePanelOpen && <div className="side-panel-overlay" onClick={toggleSidePanel}></div>}
-    
+      {sidePanelOpen && (
+        <div className="side-panel-overlay" onClick={toggleSidePanel}></div>
+      )}
     </div>
   );
 }

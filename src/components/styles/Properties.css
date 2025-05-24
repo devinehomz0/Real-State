@@ -104,3 +104,11 @@
   color: var(--text-secondary);
   font-size: 14px;
 }
+
+.admin_allListing{
+/* 8446352665 */
+}
+.admin_listing{
+  /* margin-top: -5rem !important; */
+  background-color: black;
+}
