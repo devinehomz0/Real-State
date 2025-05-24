@@ -1,7 +1,6 @@
 // src/App.jsx
-import React from "react"; // Make sure React is imported if not already
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import Admin from "./components/admin/Admin"; // Your Admin layout component
+import Admin from "./components/admin/admin"; // Your Admin layout component
 import Properties from "./components/admin/Properties"; // Example admin page
 import Inquiries from "./components/admin/Inquiries"; // Example admin page
 import CreateProperty from "./components/admin/CreateProperty"; // Example admin page
@@ -19,10 +18,10 @@ function App() {
       <Routes>
         {/* Protected Admin Routes */}
         <Route
-          path="/admin/*"
+       path="/admin/*"
           element={
             <ProtectedRoute>
-              <AdminMain />
+                   <AdminMain />
             </ProtectedRoute>
           }
         >
@@ -38,16 +37,17 @@ function App() {
         {/* Login Page */}
         <Route path="/login" element={<LoginPage />} />
 
-       
-        {/* <Route
-          path="/adminnew"
+        {/* Potentially another admin route, protect it if needed */}
+        <Route
+            path="/adminnew" 
           element={
             <ProtectedRoute>
-            
-              <Admin />
+              {" "}
+              {/* Or however you want to handle AdminMain */}
+         <Admin />
             </ProtectedRoute>
           }
-        /> */}
+        />
 
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
