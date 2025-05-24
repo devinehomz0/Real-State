@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react"; // Added useRef
+import React, { useState, useEffect, useRef } from "react";
 import { addDoc, updateDoc, collection, doc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import ImageUploader from "./imageUpload";
-
+import { useNavigate } from "react-router-dom";
 const initialForm = {
   title: "",
   type: "",
@@ -34,6 +34,7 @@ const initialForm = {
   projectName: "",
 };
 
+// ... (typeOptions, bhkOptions, etc. remain the same) ...
 const typeOptions = [
   "Flats / Apartments",
   "Independent / Builder Floors",
@@ -64,23 +65,26 @@ const facingOptions = [
 const statusOptions = ["For Sale", "For Rent"];
 const priceUnitOptions = ["Lac", "Crore"];
 
-// Helper to convert camelCase to Title Case
 const camelToTitle = (camelCase) => {
   if (!camelCase) return "";
   const result = camelCase.replace(/([A-Z])/g, " $1");
   return result.charAt(0).toUpperCase() + result.slice(1);
 };
 
-function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
+function AddOrEditListing({
+  listing,
+  fetchListings,
+  editingListing,
+  clearEditing,
+}) {
   const [form, setForm] = useState(initialForm);
   const [imageUrls, setImageUrls] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [imagesUploading, setImagesUploading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [showErrorSummary, setShowErrorSummary] = useState(false); // New state for error summary
-  const errorSummaryRef = useRef(null); // Ref for scrolling to error summary
-
-  // Map field names to more readable display names for the summary
+  const [showErrorSummary, setShowErrorSummary] = useState(false);
+  const errorSummaryRef = useRef(null);
+let navigate = useNavigate();
   const getFieldDisplayName = (fieldName) => {
     const names = {
       title: "Title",
@@ -102,32 +106,39 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
       superBuiltupArea: "Super Builtup Area",
       carpetArea: "Carpet Area",
       images: "Images",
-      // Add other specific names if needed, otherwise camelToTitle will be used
     };
     return names[fieldName] || camelToTitle(fieldName);
   };
 
   useEffect(() => {
-    if (editingListing) {
+    // Determine if we are in "edit" mode.
+    // `editingListing` is for when this component is used in a context where an "edit" button is clicked within the same page.
+    // `listing` (passed from CreateProperty) is for when the component is loaded on a dedicated edit page.
+    const dataToEdit = editingListing || listing;
+
+    if (dataToEdit) {
+      console.log("Populating form with:", dataToEdit);
       setForm({
-        ...initialForm,
-        ...editingListing,
-        priceUnit: editingListing.priceUnit || "Lac",
-        features: editingListing.features
-          ? Array.isArray(editingListing.features)
-            ? editingListing.features.join(", ")
-            : editingListing.features
+        ...initialForm, // Start with defaults to ensure all fields are present
+        ...dataToEdit, // Spread the data to edit
+        priceUnit: dataToEdit.priceUnit || "Lac", // Ensure default if not present
+        features: dataToEdit.features
+          ? Array.isArray(dataToEdit.features)
+            ? dataToEdit.features.join(", ") // Convert array to string for input
+            : dataToEdit.features
           : "",
       });
-      setImageUrls(editingListing.imageUrls || []);
+      setImageUrls(dataToEdit.imageUrls || []);
     } else {
+      // Reset to initial state for "create new" mode
       setForm(initialForm);
       setImageUrls([]);
     }
-    setErrors({});
-    setShowErrorSummary(false); // Reset error summary visibility
-  }, [editingListing]);
+    setErrors({}); // Always reset errors when the listing to edit changes or goes away
+    setShowErrorSummary(false);
+  }, [editingListing, listing]); // Re-run this effect if `editingListing` or `listing` prop changes
 
+  // ... (handleUploadComplete, handleImagesUploading, validateField, validateForm, handleChange, handleSelect, focusField, handleSubmit, renderButtonGroup functions remain the same) ...
   const handleUploadComplete = (urls) => {
     setImageUrls(urls);
     setImagesUploading(false);
@@ -211,7 +222,11 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
         key === "superBuiltupArea" ||
         key === "carpetArea"
       ) {
-        const err = validateField(key, form[key]);
+        // Ensure form[key] exists before validating, especially for optional fields not in initialForm
+        const err = validateField(
+          key,
+          form[key] !== undefined ? form[key] : ""
+        );
         if (err) newErrors[key] = err;
       }
     });
@@ -229,8 +244,6 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    // Optionally hide summary when user starts correcting
-    // if (showErrorSummary) setShowErrorSummary(false);
   };
 
   const handleSelect = (name, value) => {
@@ -238,25 +251,20 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-    // if (showErrorSummary) setShowErrorSummary(false);
   };
 
   const focusField = (fieldName) => {
     let elementToFocus = document.getElementById(fieldName);
-
     if (!elementToFocus) {
-      // Try for button groups or special sections
       if (fieldName === "images") {
         elementToFocus = document.getElementById("image-upload-section");
       } else {
         elementToFocus = document.getElementById(`button-group-${fieldName}`);
       }
     }
-
     if (elementToFocus) {
-      elementToFocus.focus({ preventScroll: true }); // Focus first
+      elementToFocus.focus({ preventScroll: true });
       elementToFocus.scrollIntoView({ behavior: "smooth", block: "center" });
-      // For button groups, focus the first button if the group div itself isn't focusable by default
       if (
         elementToFocus.classList.contains("button-group") ||
         elementToFocus.id === "image-upload-section"
@@ -273,13 +281,11 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowErrorSummary(false); // Reset first
+    setShowErrorSummary(false);
 
     if (!validateForm()) {
       setShowErrorSummary(true);
-      // Scroll to the error summary box if it's shown
       setTimeout(() => {
-        // Timeout to ensure DOM update
         errorSummaryRef.current?.scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -289,11 +295,29 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
     }
 
     setSubmitting(true);
+
+    // Helper function to safely process these values
+    const processNumericPlusField = (value) => {
+      if (typeof value === "string" && value.includes("+")) {
+        return Number(value.replace("+", ""));
+      }
+      if (value === "" || value === null || value === undefined) {
+        return ""; // Or handle as needed, e.g., null for Firestore
+      }
+      return Number(value); // Ensure it's a number if it wasn't a "plus" string
+    };
+
     const listingData = {
-      /* ... same as before ... */ ...form,
-      price: Number(form.price),
-      bedrooms: form.bedrooms ? Number(form.bedrooms) : "",
-      bathrooms: form.bathrooms ? Number(form.bathrooms) : "",
+      ...form,
+      price: form.price ? Number(form.price) : "", // Ensure price is also handled if empty
+      bedrooms: processNumericPlusField(form.bedrooms),
+      bathrooms: processNumericPlusField(form.bathrooms),
+      bhk:
+        typeof form.bhk === "string" && form.bhk.includes("+")
+          ? form.bhk.replace("+", "")
+          : form.bhk
+          ? String(form.bhk)
+          : "", // BHK might be stored as string '1', '2', '3', '4', '4+'
       superBuiltupArea: form.superBuiltupArea
         ? Number(form.superBuiltupArea)
         : "",
@@ -314,10 +338,21 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
       updatedAt: new Date(),
     };
 
+    // ... (rest of handleSubmit)
+    const isNewListing = !editingListing && !listing;
+
     try {
-      if (editingListing) {
-        await updateDoc(doc(db, "listings", editingListing.id), listingData);
-        clearEditing();
+      if (editingListing || listing) {
+        const idToUpdate = editingListing
+          ? editingListing.id
+          : listing
+          ? listing.id
+          : null;
+        if (!idToUpdate) {
+          throw new Error("No ID found for updating the listing.");
+        }
+        await updateDoc(doc(db, "listings", idToUpdate), listingData);
+        if (clearEditing) clearEditing();
       } else {
         await addDoc(collection(db, "listings"), {
           ...listingData,
@@ -326,25 +361,23 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
       }
       setForm(initialForm);
       setImageUrls([]);
-      fetchListings();
+      if (fetchListings) fetchListings();
       setErrors({});
       setShowErrorSummary(false);
     } catch (error) {
       console.error("Error submitting listing:", error);
       setErrors((prev) => ({
         ...prev,
-        form: "Failed to submit listing. Please try again.",
+        form: `Failed to submit listing. ${error.message}`,
       }));
-      setShowErrorSummary(true); // Show summary for backend/general errors too
+      setShowErrorSummary(true);
     } finally {
       setSubmitting(false);
+      navigate("/admin");
     }
   };
-
   const renderButtonGroup = (name, options) => (
     <div className="button-group" id={`button-group-${name}`} tabIndex={-1}>
-      {" "}
-      {/* Added id and tabIndex */}
       {options.map((option) => (
         <button
           type="button"
@@ -363,9 +396,10 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
 
   return (
     <form onSubmit={handleSubmit} className="property-form">
-      <h2>{editingListing ? "Edit Listing" : "Create New Listing"}</h2>
+      <h2>
+        {editingListing || listing ? "Edit Listing" : "Create New Listing"}
+      </h2>
 
-      {/* Error Summary Section */}
       {showErrorSummary &&
         Object.keys(errors).filter((key) => errors[key] && key !== "form")
           .length > 0 && (
@@ -385,7 +419,7 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
             </h4>
             <ul style={{ paddingLeft: "20px", margin: 0 }}>
               {Object.entries(errors).map(([field, message]) =>
-                message && field !== "form" ? ( // Exclude general form error from this list
+                message && field !== "form" ? (
                   <li key={field} style={{ marginBottom: "5px" }}>
                     <button
                       type="button"
@@ -424,8 +458,7 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
 
       {/* Type */}
       <div className="form-section">
-        <label htmlFor="type">Type *</label>{" "}
-        {/* Assuming renderButtonGroup uses 'type' as its name */}
+        <label htmlFor="type">Type *</label>
         {renderButtonGroup("type", typeOptions)}
       </div>
       {/* BHK, Bedrooms, Bathrooms */}
@@ -536,7 +569,6 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
           />
         </div>
       </div>
-
       {/* Car Parking, Project Name, Title */}
       <div className="form-row">
         <div>
@@ -709,13 +741,12 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
       </div>
       {/* Image Upload */}
       <div className="form-section" id="image-upload-section" tabIndex={-1}>
-        {" "}
-        {/* Added id and tabIndex */}
         <label>Upload up to 20 Photos *</label>
         <ImageUploader
           onUploadComplete={handleUploadComplete}
           onUploading={handleImagesUploading}
           maxImages={20}
+          initialImageUrls={imageUrls}
         />
         {imageUrls.length > 0 && (
           <div
@@ -748,27 +779,28 @@ function AddOrEditListing({ fetchListings, editingListing, clearEditing }) {
         disabled={
           submitting ||
           imagesUploading ||
-          (!editingListing && !imageUrls.length)
-        } // Allow update even if images not changed
+          (!editingListing && !listing && !imageUrls.length)
+        }
       >
         {submitting
-          ? editingListing
+          ? editingListing || listing
             ? "Updating..."
             : "Submitting..."
-          : editingListing
+          : editingListing || listing
           ? "Update Listing"
           : "Create Listing"}
       </button>
-      {editingListing && (
-        <button
-          type="button"
-          className="cancel-btn"
-          onClick={clearEditing}
-          disabled={submitting}
-        >
-          Cancel
-        </button>
-      )}
+      {editingListing &&
+        clearEditing && ( // Only show cancel if it's a modal-like edit with clearEditing prop
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={clearEditing}
+            disabled={submitting}
+          >
+            Cancel
+          </button>
+        )}
     </form>
   );
 }

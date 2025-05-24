@@ -10,6 +10,8 @@ import {
   limit,
   startAfter,
   getDocs,
+  doc, // Added for delete
+  deleteDoc, // Added for delete
 } from "firebase/firestore";
 import "../components/styles/AllListings.css";
 import {
@@ -19,6 +21,8 @@ import {
   FaMapMarkerAlt,
   FaChevronLeft,
   FaChevronRight,
+  FaEdit, // Ensure this is available
+  FaTrash, // Ensure this is available
 } from "react-icons/fa";
 import { BsTextareaResize } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
@@ -45,10 +49,13 @@ const convertToRupees = (price, unit) => {
   return Number(price) * multiplier;
 };
 
-const ListingCard = ({ listing, onEdit, onDelete }) => {
+// --- ListingCard Component ---
+const ListingCard = ({ listing, onEdit, onDelete, admin }) => {
+  // Added admin prop
   const navigate = useNavigate();
-  const navigateToListing = (listing) => {
-    navigate(`/listing`, { state: { listing } });
+  const navigateToListing = (listingData) => {
+    // Renamed listing to listingData to avoid conflict
+    navigate(`/listing`, { state: { listing: listingData } });
   };
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const {
@@ -66,24 +73,28 @@ const ListingCard = ({ listing, onEdit, onDelete }) => {
     featured,
     priceUnit,
   } = listing;
+
   const nextImage = (e) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) =>
       prev === imageUrls.length - 1 ? 0 : prev + 1
     );
   };
+
   const prevImage = (e) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) =>
       prev === 0 ? imageUrls.length - 1 : prev - 1
     );
   };
+
   const displayFullAddress = [address, city, state].filter(Boolean).join(", ");
   let priceDisplay = "Contact for Price";
   if (price) {
     priceDisplay = `₹${Number(price).toLocaleString()}`;
     if (status === "For Rent") priceDisplay += "/mo";
   }
+
   return (
     <div className="listing-card-item">
       <div
@@ -158,15 +169,41 @@ const ListingCard = ({ listing, onEdit, onDelete }) => {
           )}
         </div>
       </div>
+      {admin && (
+        <div className="listing-card-admin-actions">
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent card click if buttons are inside clickable area
+              onEdit(listing);
+            }}
+            className="admin-action-button edit-button"
+            aria-label="Edit Listing"
+          >
+            <FaEdit /> Edit
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(listing.id);
+            }}
+            className="admin-action-button delete-button"
+            aria-label="Delete Listing"
+          >
+            <FaTrash /> Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
+// --- ListingsDisplayComponent ---
 function ListingsDisplayComponent({
   listings,
-  onEdit,
-  onListingDeleted,
+  onEditListing, // Renamed to match prop from AllListings
+  onDeleteListing, // Renamed to match prop from AllListings
   loading,
+  admin, // Added admin prop
 }) {
   if (loading)
     return <div className="listings-loader">Loading Properties...</div>;
@@ -178,8 +215,9 @@ function ListingsDisplayComponent({
           <ListingCard
             key={listing.id}
             listing={listing}
-            onEdit={onEdit}
-            // onDelete prop would be passed here if ListingCard used it
+            onEdit={onEditListing} // Pass down directly
+            onDelete={onDeleteListing} // Pass down directly
+            admin={admin} // Pass down admin status
           />
         ))}
       </div>
@@ -187,8 +225,10 @@ function ListingsDisplayComponent({
   );
 }
 
+// --- AllListings Component ---
 function AllListings({ admin }) {
-  console.log(admin);
+  console.log("Admin status in AllListings:", admin);
+  const navigate = useNavigate(); // For edit navigation
   console.log("AllListings RENDER START");
   const [allListingsData, setAllListingsData] = useState([]);
   const [displayedListings, setDisplayedListings] = useState([]);
@@ -196,14 +236,14 @@ function AllListings({ admin }) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [lastVisibleDoc, setLastVisibleDoc] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  const [initialLoadDone, setInitialLoadDone] = useState(false); // Tracks if the *first* load cycle for current filters has completed
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [showFallbackMessage, setShowFallbackMessage] = useState(false);
   const [isUsingFallbackQuery, setIsUsingFallbackQuery] = useState(false);
-  const isInitialRenderGlobal = useRef(true); // Tracks if it's the very first render of the component lifecycle
+  const isInitialRenderGlobal = useRef(true);
 
   const propertyTypes = [
     { value: "", label: "All Types" },
@@ -220,7 +260,6 @@ function AllListings({ admin }) {
     { value: "For Sale", label: "For Sale" },
     { value: "For Rent", label: "For Rent" },
   ];
-  // useMemo for priceRanges to ensure stable reference if it were complex or passed down
   const priceRanges = React.useMemo(
     () => [
       { value: "", label: "Any Price" },
@@ -260,10 +299,10 @@ function AllListings({ admin }) {
         setLoadingMore(true);
       } else {
         setLoading(true);
-        setAllListingsData([]); // Reset data for a new query/filter set
+        setAllListingsData([]);
         setLastVisibleDoc(null);
         setHasMore(true);
-        setInitialLoadDone(false); // Mark that we are starting a new load cycle for current filters
+        setInitialLoadDone(false);
       }
 
       const isPerformingSimplifiedInitialQuery =
@@ -273,12 +312,10 @@ function AllListings({ admin }) {
         !isUsingFallbackQuery;
       const shouldUseFallback =
         isUsingFallbackQuery && !isPerformingSimplifiedInitialQuery;
-
       const constraints = [];
+
       if (isPerformingSimplifiedInitialQuery) {
-        console.log(
-          "FETCH_DATA_BUILD: SIMPLIFIED initial query (first component render, no filters)."
-        );
+        console.log("FETCH_DATA_BUILD: SIMPLIFIED initial query.");
       } else if (!shouldUseFallback) {
         console.log(
           "FETCH_DATA_BUILD: Primary query with type/status filters."
@@ -289,9 +326,7 @@ function AllListings({ admin }) {
       } else {
         console.log("FETCH_DATA_BUILD: FALLBACK query.");
       }
-
       constraints.push(orderBy("createdAt", "desc"));
-
       if (isLoadMore && lastVisibleDoc) {
         constraints.push(startAfter(lastVisibleDoc));
       }
@@ -299,21 +334,9 @@ function AllListings({ admin }) {
         limit(isLoadMore ? LISTINGS_PER_PAGE_MORE : LISTINGS_PER_PAGE_INITIAL)
       );
 
-      console.log(
-        "FETCH_DATA_BUILD: Final constraints:",
-        constraints.map(
-          (c) =>
-            `${c.type} ${c._fiel || ""} ${c._op || ""} ${c._values || ""} ${
-              c._direction || ""
-            }`
-        )
-      );
-
       try {
         const q = query(collection(db, "listings"), ...constraints);
         const documentSnapshots = await getDocs(q);
-        console.log("FETCH_DATA: Docs found:", documentSnapshots.docs.length);
-
         const newDocs = documentSnapshots.docs.map((docSnap) => ({
           id: docSnap.id,
           ...docSnap.data(),
@@ -322,21 +345,14 @@ function AllListings({ admin }) {
         if (
           documentSnapshots.empty &&
           !isLoadMore &&
-          !shouldUseFallback && // Critical: only try to switch to fallback if not already in fallback
-          !isPerformingSimplifiedInitialQuery && // Don't fallback from the initial simplified query
-          (selectedType || selectedStatus) // Only trigger fallback if actual server filters were applied
+          !shouldUseFallback &&
+          !isPerformingSimplifiedInitialQuery &&
+          (selectedType || selectedStatus)
         ) {
-          console.log(
-            "FETCH_DATA: Primary query for type/status empty. Initiating fallback."
-          );
           setShowFallbackMessage(true);
-          setIsUsingFallbackQuery(true); // This will trigger the main useEffect again for a fallback fetch
-          // setLoading(true) was already set, no need to set it to false here.
-          return; // Exit this fetchData call, the useEffect will call it again with isUsingFallbackQuery=true
+          setIsUsingFallbackQuery(true);
+          return;
         }
-
-        // If we've successfully executed a primary query (not fallback, not simplified initial) for some filters,
-        // ensure the fallback message is cleared.
         if (
           !isLoadMore &&
           !isUsingFallbackQuery &&
@@ -345,7 +361,6 @@ function AllListings({ admin }) {
         ) {
           setShowFallbackMessage(false);
         }
-
         setAllListingsData((prev) =>
           isLoadMore ? [...prev, ...newDocs] : newDocs
         );
@@ -358,66 +373,40 @@ function AllListings({ admin }) {
         );
       } catch (error) {
         console.error("!!! FETCH_DATA: Firebase Error:", error);
-        // TODO: Set an error state to display to user
       } finally {
-        if (isLoadMore) {
-          setLoadingMore(false);
-        } else {
-          setLoading(false);
-        }
-        // initialLoadDone is true once a non-loadMore fetch completes (primary, fallback, or initial)
-        if (!isLoadMore) {
-          setInitialLoadDone(true);
-        }
-        if (isInitialRenderGlobal.current) {
-          isInitialRenderGlobal.current = false; // Mark that the component's very first load cycle has passed
-        }
-        console.log("FETCH_DATA: finally block. Loading states:", {
-          loading,
-          loadingMore,
-        });
+        if (isLoadMore) setLoadingMore(false);
+        else setLoading(false);
+        if (!isLoadMore) setInitialLoadDone(true);
+        if (isInitialRenderGlobal.current)
+          isInitialRenderGlobal.current = false;
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       selectedType,
       selectedStatus,
       isUsingFallbackQuery,
-      lastVisibleDoc,
-      priceRanges,
+      lastVisibleDoc /* for loadMore in useCallback, but loadMoreData is separate */,
     ]
-  ); // priceRanges added due to useMemo, lastVisibleDoc for loadMore
-  // isInitialRenderGlobal.current should not be a dep.
-  // Let's remove lastVisibleDoc, as loadMoreData is separate
+    // Removed priceRanges as it's not directly used in server query constraints here
+    // Re-add lastVisibleDoc because if fetchData were used for loadMore, it would be needed.
+    // For current separate loadMoreData, it's not strictly needed for *this* useCallback, but doesn't hurt.
+  );
 
   const actualFetchDataDependencies = [
     selectedType,
     selectedStatus,
     isUsingFallbackQuery,
-    priceRanges,
-  ];
-  // We need a stable fetchData for loadMoreData to call if it were to use the same function.
-  // For now, loadMoreData is separate.
+  ]; // priceRanges removed as it's stable and not directly in server query here
 
-  // Effect for initial mount and server-side filter changes (Type, Status, Fallback state)
   useEffect(() => {
     console.log("EFFECT: Firestore Fetch useEffect triggered. Deps changed.");
-    fetchData(false); // false indicates it's not a "load more" operation
+    fetchData(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, actualFetchDataDependencies);
 
-  // Client-side search and price filtering
   useEffect(() => {
-    console.log(
-      "EFFECT: Client-side filtering. Search:",
-      searchTerm,
-      "Price Range:",
-      selectedPriceRange,
-      "Data size:",
-      allListingsData.length
-    );
     let filtered = [...allListingsData];
-
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(
@@ -429,7 +418,6 @@ function AllListings({ admin }) {
           String(l.price).includes(term)
       );
     }
-
     if (selectedPriceRange) {
       const priceRangeObj = priceRanges.find(
         (r) => r.value === selectedPriceRange
@@ -438,30 +426,22 @@ function AllListings({ admin }) {
         filtered = filtered.filter((l) => {
           const actualPriceInRupees = convertToRupees(l.price, l.priceUnit);
           if (actualPriceInRupees === null) return false;
-          let passMin = true;
-          let passMax = true;
-          if (priceRangeObj.min !== undefined) {
+          let passMin = true,
+            passMax = true;
+          if (priceRangeObj.min !== undefined)
             passMin = actualPriceInRupees >= priceRangeObj.min;
-          }
-          if (priceRangeObj.max !== undefined) {
+          if (priceRangeObj.max !== undefined)
             passMax = actualPriceInRupees <= priceRangeObj.max;
-          }
           return passMin && passMax;
         });
       }
     }
-    console.log("EFFECT: Client-side filtering. Result size:", filtered.length);
     setDisplayedListings(filtered);
   }, [searchTerm, selectedPriceRange, allListingsData, priceRanges]);
 
-  // loadMoreData needs to be a separate function because fetchData is rebuilt
-  // if we want to use fetchData directly for load more, fetchData's dependencies need care.
-  // For simplicity, keeping loadMoreData separate, duplicating some logic.
   const loadMoreData = async () => {
     if (!hasMore || loading || loadingMore) return;
-    console.log("LOAD_MORE_FUNC: called. Fallback:", isUsingFallbackQuery);
     setLoadingMore(true);
-
     const isPerformingSimplifiedInitialQuery =
       isInitialRenderGlobal.current &&
       !selectedType &&
@@ -469,11 +449,8 @@ function AllListings({ admin }) {
       !isUsingFallbackQuery;
     const shouldUseFallback =
       isUsingFallbackQuery && !isPerformingSimplifiedInitialQuery;
-
     const constraints = [];
-    if (isPerformingSimplifiedInitialQuery) {
-      // This case should not happen for "load more" as initial query would have run
-    } else if (!shouldUseFallback) {
+    if (!isPerformingSimplifiedInitialQuery && !shouldUseFallback) {
       if (selectedType) constraints.push(where("type", "==", selectedType));
       if (selectedStatus)
         constraints.push(where("status", "==", selectedStatus));
@@ -481,17 +458,6 @@ function AllListings({ admin }) {
     constraints.push(orderBy("createdAt", "desc"));
     if (lastVisibleDoc) constraints.push(startAfter(lastVisibleDoc));
     constraints.push(limit(LISTINGS_PER_PAGE_MORE));
-
-    console.log(
-      "LOAD_MORE_FUNC: Constraints:",
-      constraints.map(
-        (c) =>
-          `${c.type} ${c._fiel || ""} ${c._op || ""} ${c._values || ""} ${
-            c._direction || ""
-          }`
-      )
-    );
-
     try {
       const q = query(collection(db, "listings"), ...constraints);
       const documentSnapshots = await getDocs(q);
@@ -499,7 +465,7 @@ function AllListings({ admin }) {
         id: docSnap.id,
         ...docSnap.data(),
       }));
-      setAllListingsData((prev) => [...prev, ...newDocs]); // Append for client-side filter
+      setAllListingsData((prev) => [...prev, ...newDocs]);
       setLastVisibleDoc(
         documentSnapshots.docs[documentSnapshots.docs.length - 1] || null
       );
@@ -511,25 +477,65 @@ function AllListings({ admin }) {
     }
   };
 
-  const handleEdit = (listing) => console.log("Edit listing:", listing.id);
+  const handleServerFilterChange = (setter, value) => {
+    setIsUsingFallbackQuery(false);
+    setShowFallbackMessage(false);
+    setter(value);
+  };
+
+  // --- Edit and Delete Handlers ---
+  const handleEditListing = (listingToEdit) => {
+    console.log("Navigating to edit page for listing ID:", listingToEdit.id);
+    // Ensure you have a route like '/edit-listing/:listingId'
+    navigate(`/admin/create-property`, {
+      state: { listing: listingToEdit },
+    });
+  };
 
   const refreshListingsAfterDelete = (deletedListingId) => {
-    console.log("REFRESH_DELETE: called for", deletedListingId);
+    console.log(
+      "REFRESH_DELETE: Removing listing from local state:",
+      deletedListingId
+    );
     setAllListingsData((prev) =>
       prev.filter((item) => item.id !== deletedListingId)
     );
+    // Note: displayedListings will auto-update due to its useEffect dependency on allListingsData
   };
 
-  const handleServerFilterChange = (setter, value) => {
-    console.log("UI: Server Filter changed. Resetting for new query.");
-    // When a server-side filter (type, status) changes, we want to:
-    // 1. Reset the fallback state, assuming we'll try a primary query first.
-    // 2. Clear any existing fallback message.
-    // 3. The main useEffect for data fetching will be triggered by 'setter(value)',
-    //    and 'fetchData' will handle resetting data and loading states.
-    setIsUsingFallbackQuery(false);
-    setShowFallbackMessage(false);
-    setter(value); // e.g., setSelectedType(value)
+  const handleDeleteListing = async (listingIdToDelete) => {
+    if (!listingIdToDelete) {
+      console.error("Delete action called without listing ID.");
+      return;
+    }
+    // Optional: Add a confirmation dialog here
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this listing? This action cannot be undone."
+      )
+    ) {
+      return;
+    }
+    console.log(
+      "Attempting to delete listing from Firestore:",
+      listingIdToDelete
+    );
+    try {
+      const listingDocRef = doc(db, "listings", listingIdToDelete);
+      await deleteDoc(listingDocRef);
+      console.log(
+        "Listing deleted successfully from Firestore:",
+        listingIdToDelete
+      );
+      refreshListingsAfterDelete(listingIdToDelete); // Update client-side state
+    } catch (error) {
+      console.error(
+        "Error deleting listing from Firestore:",
+        listingIdToDelete,
+        error
+      );
+      alert("Failed to delete listing. Please try again."); // User feedback
+    }
   };
 
   return (
@@ -581,11 +587,7 @@ function AllListings({ admin }) {
           </select>
           <select
             value={selectedPriceRange}
-            onChange={(e) => {
-              // This is line 427 based on original context
-              console.log("UI: Price changed (client-side):", e.target.value);
-              setSelectedPriceRange(e.target.value);
-            }}
+            onChange={(e) => setSelectedPriceRange(e.target.value)}
             className="filter-select"
           >
             {priceRanges.map((range) => (
@@ -603,23 +605,22 @@ function AllListings({ admin }) {
         )}
         <ListingsDisplayComponent
           listings={displayedListings}
-          onEdit={handleEdit}
-          onListingDeleted={refreshListingsAfterDelete}
-          loading={loading && !initialLoadDone} // Show main loading when not loadingMore and initialLoad for current filter set is not done
+          loading={loading && !initialLoadDone}
+          admin={admin} // Pass admin status down
+          onEditListing={handleEditListing} // Pass edit handler
+          onDeleteListing={handleDeleteListing} // Pass delete handler
         />
         {loadingMore && <div className="listings-loader">Loading more...</div>}
-
         {!loading &&
           !loadingMore &&
           hasMore &&
-          displayedListings.length > 0 && ( // Only show load more if there are already items
+          displayedListings.length > 0 && (
             <div className="load-more-container">
               <button onClick={loadMoreData} disabled={loadingMore || loading}>
                 {loadingMore ? "Loading..." : "Load More"}
               </button>
             </div>
           )}
-
         {!loading &&
           !loadingMore &&
           initialLoadDone &&

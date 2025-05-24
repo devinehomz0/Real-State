@@ -110,4 +110,38 @@
 }
 .admin_listing{
   margin-top: -5rem !important;
+}/* Example styles for admin buttons in ListingCard */
+.listing-card-admin-actions {
+  display: flex;
+  justify-content: space-around; /* Or space-between, flex-end */
+  padding: 8px 10px; /* Adjust padding as needed */
+  border-top: 1px solid #eee; /* Optional separator */
+  gap: 10px; /* Space between buttons */
+}
+
+.admin-action-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-button {
+  background-color: #e0e0e0; /* Light grey, or your theme's secondary color */
+  color: #333;
+}
+.edit-button:hover {
+  background-color: #d0d0d0;
+}
+
+.delete-button {
+  background-color: #ffdddd; /* Light red */
+  color: #c00; /* Dark red text */
+}
+.delete-button:hover {
+  background-color: #ffcccc;
 }

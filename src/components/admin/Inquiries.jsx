@@ -1,84 +1,249 @@
-import { useState } from 'react';
-import "../styles/Inquiries.css";
+import React, { useState, useEffect } from "react";
+import { db } from "../../config/firebase"; // Adjust path to your firebase config
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc,
+  orderBy,query
+} from "firebase/firestore";
+import { FaTrash, FaSearch } from "react-icons/fa"; // For icons
+import "../styles/Inquiries.css"; // Your existing CSS
+
+// Helper to format Firestore Timestamp
+const formatTimestamp = (timestamp) => {
+  if (!timestamp) return "N/A";
+  // Assuming timestamp is a Firestore Timestamp object
+  const date = timestamp.toDate();
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    // second: '2-digit', // Optional: include seconds
+    // timeZoneName: 'short' // Optional: include timezone
+  });
+};
 
 function Inquiries() {
-  const [inquiries] = useState([
-    {
-      id: 1,
-      name: 'Emma Johnson',
-      email: 'emma.johnson@example.com',
-      phone: '(555) 123-4567',
-      message: "I'm interested in scheduling a viewing for this property. Is it available this weekend?",
-      property: 'Modern Lakefront Villa',
-      status: 'New',
-      date: 'Mar 16, 2025, 08:00 PM'
-    },
-    {
-      id: 2,
-      name: 'Michael Chen',
-      email: 'michael.chen@example.com',
-      phone: '(555) 987-6543',
-      message: 'Can you provide more information about the horse facilities? How many stalls are in the barn?',
-      property: 'Countryside Ranch House',
-      status: 'In Progress',
-      date: 'Mar 15, 2025, 03:15 PM'
-    },
-    {
-      id: 3,
-      name: 'Sarah Miller',
-      email: 'sarah.miller@example.com',
-      phone: '(555) 456-7890',
-      message: "I'd like to know more about the HOA fees and what amenities are included. Also, is parking available?",
-      property: 'Downtown Luxury Apartment',
-      status: 'Completed',
-      date: 'Mar 14, 2025, 09:45 PM'
+  const [allInquiries, setAllInquiries] = useState([]);
+  const [filteredInquiries, setFilteredInquiries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(""); // For filtering by status (if applicable)
+
+  // Fetch inquiries from Firestore
+  useEffect(() => {
+    const fetchInquiriesData = async () => {
+      setLoading(true);
+      try {
+        const inquiriesCollectionRef = collection(db, "enquirys");
+        // Order by createdAt descending to show newest first
+        const q = query(inquiriesCollectionRef, orderBy("createdAt", "desc"));
+        const data = await getDocs(q);
+        const fetchedInquiries = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setAllInquiries(fetchedInquiries);
+        setFilteredInquiries(fetchedInquiries); // Initialize filtered list
+        console.log("Fetched inquiries:", fetchedInquiries);
+      } catch (error) {
+        console.error("Error fetching inquiries: ", error);
+        // Handle error (e.g., show an error message to the user)
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInquiriesData();
+  }, []);
+
+  // Handle client-side filtering
+  useEffect(() => {
+    let result = allInquiries;
+
+    // Filter by search term
+    if (searchTerm) {
+      const lowercasedSearchTerm = searchTerm.toLowerCase();
+      result = result.filter(
+        (inquiry) =>
+          (inquiry.name &&
+            inquiry.name.toLowerCase().includes(lowercasedSearchTerm)) ||
+          (inquiry.email &&
+            inquiry.email.toLowerCase().includes(lowercasedSearchTerm)) ||
+          (inquiry.phone &&
+            inquiry.phone.toLowerCase().includes(lowercasedSearchTerm)) ||
+          (inquiry.message &&
+            inquiry.message.toLowerCase().includes(lowercasedSearchTerm)) ||
+          (inquiry.description &&
+            inquiry.description.toLowerCase().includes(lowercasedSearchTerm)) ||
+          (inquiry.propertyTitle &&
+            inquiry.propertyTitle
+              .toLowerCase()
+              .includes(lowercasedSearchTerm)) ||
+          (inquiry.contact &&
+            inquiry.contact.toLowerCase().includes(lowercasedSearchTerm)) // For the 'contact' type inquiry
+      );
     }
-  ]);
+
+    // Filter by status (if you add a status field to all inquiries)
+    // For now, the mock data had status, but your Firestore structure doesn't seem to universally.
+    // If you decide to add a status field to all Firestore inquiries, you can uncomment and adapt this.
+    /*
+    if (selectedStatus) {
+      result = result.filter(inquiry =>
+        inquiry.status && inquiry.status.toLowerCase() === selectedStatus.toLowerCase()
+      );
+    }
+    */
+
+    setFilteredInquiries(result);
+  }, [searchTerm, selectedStatus, allInquiries]);
+
+  const handleDeleteInquiry = async (inquiryId) => {
+    if (!window.confirm("Are you sure you want to delete this inquiry?")) {
+      return;
+    }
+    try {
+      const inquiryDocRef = doc(db, "enquiry", inquiryId);
+      await deleteDoc(inquiryDocRef);
+      // Update local state to reflect deletion
+      setAllInquiries((prevInquiries) =>
+        prevInquiries.filter((inq) => inq.id !== inquiryId)
+      );
+      alert("Inquiry deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting inquiry: ", error);
+      alert("Failed to delete inquiry.");
+    }
+  };
+
+  if (loading) {
+    return <div className="inquiries-loading">Loading inquiries...</div>;
+  }
 
   return (
     <div className="inquiries">
-      <div className="inquiries-header">
+      <div className="inquiries-header-container">
+        {" "}
+        {/* Changed class name for clarity */}
         <div>
           <h2>Inquiries</h2>
           <p>Manage customer inquiries</p>
         </div>
       </div>
 
-      <div className="search-bar">
-        <input type="text" placeholder="Search inquiries..." />
-        <select>
+      <div className="inquiries-search-bar">
+        {" "}
+        {/* Changed class name */}
+        <div className="search-input-wrapper">
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search by name, email, message..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        {/* Example status filter if you add status to Firestore docs */}
+        {/*
+        <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
           <option value="">All Statuses</option>
-          <option value="new">New</option>
-          <option value="progress">In Progress</option>
-          <option value="completed">Completed</option>
+          <option value="New">New</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
         </select>
+        */}
       </div>
 
+      {filteredInquiries.length === 0 && !loading && (
+        <p className="no-inquiries-found">No inquiries found.</p>
+      )}
+
       <div className="inquiries-grid">
-        {inquiries.map(inquiry => (
+        {filteredInquiries.map((inquiry) => (
           <div key={inquiry.id} className="inquiry-card">
-            <div className="inquiry-header">
-              <h3>{inquiry.name}</h3>
-              <span className={`status-badge status-${inquiry.status.toLowerCase().replace(' ', '')}`}>
-                {inquiry.status}
-              </span>
+            <div className="inquiry-card-header">
+              {" "}
+              {/* Changed class name */}
+              <h3>{inquiry.name || "N/A"}</h3>
+              {/* Display a type or status if available. Your Firestore example doesn't have a consistent status. */}
+              {inquiry.type && (
+                <span
+                  className={`status-badge status-${inquiry.type
+                    .toLowerCase()
+                    .replace(" ", "-")}`}
+                >
+                  Type: {inquiry.type}
+                </span>
+              )}
             </div>
             <div className="inquiry-content">
               <p className="inquiry-contact">
-                <span>{inquiry.email}</span>
-                <span>{inquiry.phone}</span>
+                {inquiry.email && (
+                  <span>
+                    <strong>Email:</strong> {inquiry.email}
+                  </span>
+                )}
+                {inquiry.phone && (
+                  <span>
+                    <strong>Phone:</strong> {inquiry.phone}
+                  </span>
+                )}
+                {inquiry.contact && !inquiry.email && !inquiry.phone && (
+                  <span>
+                    <strong>Contact Info:</strong> {inquiry.contact}
+                  </span>
+                )}
               </p>
-              <div className="inquiry-message">
-                <h4>Message</h4>
-                <p>{inquiry.message}</p>
-              </div>
-              <div className="inquiry-property">
-                <h4>Property</h4>
-                <p>{inquiry.property}</p>
-              </div>
+
+              {/* Conditional rendering based on inquiry type */}
+              {/* Type 1: Has 'message' and 'propertyTitle' */}
+              {inquiry.message && inquiry.propertyTitle && (
+                <>
+                  <div className="inquiry-message">
+                    <h4>Message</h4>
+                    <p>{inquiry.message}</p>
+                  </div>
+                  <div className="inquiry-property">
+                    <h4>Regarding Property</h4>
+                    <p>{inquiry.propertyTitle}</p>
+                  </div>
+                  {inquiry.preference && (
+                    <p>
+                      <strong>Preferred Contact:</strong> {inquiry.preference}
+                    </p>
+                  )}
+                </>
+              )}
+
+              {/* Type 2: Has 'description' (acting as message) and 'type' (e.g., 'tennant') */}
+              {inquiry.description && inquiry.type && (
+                <>
+                  <div className="inquiry-message">
+                    <h4>Inquiry Details ({inquiry.type})</h4>
+                    <p>{inquiry.description}</p>
+                  </div>
+                </>
+              )}
+
               <div className="inquiry-footer">
-                <span className="inquiry-date">{inquiry.date}</span>
-                <button className="btn btn-primary">View Details</button>
+                <span className="inquiry-date">
+                  <strong>Received:</strong>{" "}
+                  {formatTimestamp(inquiry.createdAt)}
+                </span>
+                <div className="inquiry-actions">
+                  {/* <button className="btn btn-primary btn-small">View Details</button> */}
+                  <button
+                    onClick={() => handleDeleteInquiry(inquiry.id)}
+                    className="btn btn-danger btn-small" // Added btn-small for consistency
+                    aria-label="Delete Inquiry"
+                  >
+                    <FaTrash /> Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -75,3 +75,15 @@
   font-size: 12px;
   color: var(--text-secondary);
 }
+
+.user-profile button{
+border: 1px solid black;
+padding: 0.5rem;
+border-radius: 0.5rem;
+background-color: white;
+color: black;
+}
+.user-profile button:hover{
+  color: white;
+  background-color: black;
+}

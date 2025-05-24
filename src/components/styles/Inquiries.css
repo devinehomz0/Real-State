@@ -28,6 +28,7 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   overflow: hidden;
+  padding: 2rem;
 }
 
 .inquiry-header {
@@ -85,4 +86,97 @@
 .inquiry-date {
   color: var(--text-secondary);
   font-size: 14px;
+}/* Inquiries.css */
+.inquiries-loading,
+.no-inquiries-found {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.1em;
+  color: #666;
+}
+
+.inquiries-search-bar { /* If you renamed it */
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.search-input-wrapper .search-icon {
+    position: absolute;
+    left: 10px;
+    color: #aaa;
+}
+
+.inquiries-search-bar input[type="text"] {
+    padding-left: 30px; /* Space for the icon */
+    flex-grow: 1; /* Allow input to take available space */
+}
+
+.inquiries-search-bar select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.inquiry-card-header { /* If you renamed it */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.inquiry-contact span {
+    display: block; /* Or inline-block with margin */
+    margin-bottom: 5px;
+}
+.inquiry-contact span:last-child {
+    margin-bottom: 0;
+}
+
+.inquiry-message h4,
+.inquiry-property h4 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.inquiry-actions {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
+
+.btn-small { /* For consistency if you use it elsewhere */
+    padding: 5px 10px;
+    font-size: 0.9em;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Status badge for 'type' if used */
+.status-badge.status-tennant { /* Example for type 'tennant' */
+    background-color: #17a2b8; /* Info color */
+    color: white;
+}
+.status-badge.status-contact { /* Example for type 'contact' if you add such a type */
+    background-color: #ffc107; /* Warning color */
+    color: #212529;
 }
