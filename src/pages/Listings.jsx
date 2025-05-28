@@ -263,12 +263,12 @@ function AllListings({ admin }) {
   const priceRanges = React.useMemo(
     () => [
       { value: "", label: "Any Price" },
-      { value: "0-4000000", label: "Up to 40 Lakh", min: 0, max: 4000000 },
+      { value: "0-4000000", label: "Up to 40 Lakh",  min: 4000001,
+        max: 10000000, },
       {
         value: "4000001-10000000",
         label: "40 Lakh - 1 Cr",
-        min: 4000001,
-        max: 10000000,
+       min: 0, max: 4000000
       },
       {
         value: "10000001-20000000",

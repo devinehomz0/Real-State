@@ -29,7 +29,14 @@ export default function Navbar() {
           <a href="#contact-us-section" onClick={handleContactClick}>
             Contacts
           </a>
-          <a  href={whatsappUrl}  target="_blank"  rel="noopener noreferrer"  className="whatsapp-link">WhatsApp</a>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="whatsapp-link"
+          >
+            WhatsApp
+          </a>
         </div>
         <div className="mobile-menu-icon mobile-only" onClick={toggleSidePanel}>
           <span />
@@ -49,11 +56,23 @@ export default function Navbar() {
         <a href="/admin" onClick={toggleSidePanel}>
           Listings
         </a>
-        <a href="#" onClick={toggleSidePanel}>
-          About Us
-        </a>
-        <a href="#contact" onClick={toggleSidePanel}>
+        <a
+          href="#contact-us-section"
+          onClick={() => {
+            handleContactClick();
+            toggleSidePanel();
+          }}
+        >
           Contacts
+        </a>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="whatsapp-link"
+          onClick={toggleSidePanel}
+        >
+          WhatsApp
         </a>
       </div>
       {/* Overlay for closing side panel */}
