@@ -50,18 +50,17 @@ export default function Navbar() {
         <div className="close-btn" onClick={toggleSidePanel}>
           &times;
         </div>
-        <a href="/home" onClick={toggleSidePanel}>
+        <a href="/" onClick={toggleSidePanel}>
           Home
         </a>
-        <a href="/admin" onClick={toggleSidePanel}>
+        <a href="/alllistings" onClick={toggleSidePanel}>
           Listings
         </a>
         <a
           href="#contact-us-section"
-          onClick={() => {
-            handleContactClick();
-            toggleSidePanel();
-          }}
+          onClick={
+            handleContactClick          
+          }
         >
           Contacts
         </a>

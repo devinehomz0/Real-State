@@ -26,6 +26,7 @@ import {
 } from "react-icons/fa";
 import { BsTextareaResize } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import DevineHomzLoader from "../components/ui_Componets/Loader";
 
 const LISTINGS_PER_PAGE_INITIAL = 20;
 const LISTINGS_PER_PAGE_MORE = 20;
@@ -537,8 +538,9 @@ function AllListings({ admin }) {
       alert("Failed to delete listing. Please try again."); // User feedback
     }
   };
-
-  return (
+  if (loading) {
+    return <DevineHomzLoader isLoading={true} />;
+  }  return (
     <div>
       {!admin && <Navbar />}
       <div className="listings-page-container">
