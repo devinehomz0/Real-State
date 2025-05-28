@@ -29,7 +29,7 @@ const ImageSection = ({ imageUrls }) => {
   const showControls = true;
 
   return (
-    <div className="image-section">
+    <div className="image-section imageSection">
       <img
         src={imageUrls[currentImageIndex]}
         alt={`Property image ${currentImageIndex + 1}`}
@@ -43,7 +43,6 @@ const ImageSection = ({ imageUrls }) => {
           <button onClick={nextImage} className="img-nav-btn next-btn">
             <i className="fas fa-chevron-right"></i>
           </button>
-         
         </div>
       )}
     </div>

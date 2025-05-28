@@ -107,8 +107,9 @@ function Inquiries() {
       return;
     }
     try {
-      const inquiryDocRef = doc(db, "enquiry", inquiryId);
-      await deleteDoc(inquiryDocRef);
+      const inquiryDocRef = doc(db, "enquirys", inquiryId);
+      let deleter = await deleteDoc(inquiryDocRef);
+      console.log(deleter)
       // Update local state to reflect deletion
       setAllInquiries((prevInquiries) =>
         prevInquiries.filter((inq) => inq.id !== inquiryId)
@@ -147,15 +148,7 @@ function Inquiries() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        {/* Example status filter if you add status to Firestore docs */}
-        {/*
-        <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-          <option value="">All Statuses</option>
-          <option value="New">New</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Completed">Completed</option>
-        </select>
-        */}
+       
       </div>
 
       {filteredInquiries.length === 0 && !loading && (

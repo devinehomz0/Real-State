@@ -641,3 +641,6 @@
   outline: 2px solid skyblue; /* Or your theme's focus color */
   outline-offset: 2px;
 }
+.listing-card-item:hover{
+  cursor: pointer !important;
+}

@@ -16,7 +16,7 @@ const PropertyHeader = ({
       <div className="breadcrumbs">
         <a href="/home">Home</a> > 
         <a href="/alllistings">  
-          {/*propertyData.type || 'Apartment'*/ } Apartment
+          {/*propertyData.type || 'Apartment'*/ } Listings
         </a>{" "}
         > <span> {title}</span>
       </div>

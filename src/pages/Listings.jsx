@@ -97,12 +97,13 @@ const ListingCard = ({ listing, onEdit, onDelete, admin }) => {
   }
 
   return (
-    <div className="listing-card-item">
+    <div className="listing-card-item"
+      onClick={() => {
+          navigateToListing(listing);
+        }}>
       <div
         className="listing-card-image-wrapper"
-        onClick={() => {
-          navigateToListing(listing);
-        }}
+        
       >
         {imageUrls && imageUrls.length > 0 ? (
           <img
@@ -539,7 +540,7 @@ function AllListings({ admin }) {
     }
   };
   if (loading) {
-    return <DevineHomzLoader isLoading={true} />;
+    return <DevineHomzLoader isLoading={true} className="check" />;
   }  return (
     <div>
       {!admin && <Navbar />}

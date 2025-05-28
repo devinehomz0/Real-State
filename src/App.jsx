@@ -52,7 +52,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/alllistings" element={<AllListings />} />
-        <Route path="/listing/" element={<PropertyDetails />} />
+        <Route path="/listing/" element={<PropertyDetails  />} />
 
         {/* You might want a catch-all or 404 route */}
         {/* <Route path="*" element={<NotFoundPage />} /> */}

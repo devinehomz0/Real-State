@@ -47,6 +47,7 @@ const DetailsSection = ({
     },
     { label: "Facing", value: data?.facing },
     { label: "Total Floors", value: data?.totalFloors },
+    {label:"BHK",value:data?.bhk}
   ];
   const DetailItem = ({ label, value }) => (
     <div className="detail-item">

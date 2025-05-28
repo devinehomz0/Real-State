@@ -49,7 +49,7 @@ const ContactForm = ({ propertyTitle }) => {
   };
 
   return (
-    <div className="contact-form-section card">
+    <div className="contact-form-section card imageSection">
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <input

@@ -55,12 +55,9 @@ const PropertyDetailsPage = () => {
   };
 
   return (
-    <div>
+    <div className="indiv">
       <Navbar></Navbar>{" "}
-      <button
-        onClick={() => navigate(-1)}
-      className="back_indiv"
-      >
+      <button onClick={() => navigate(-1)} className="back_indiv">
         ← Back
       </button>
       <div className="property-details-container">
@@ -77,7 +74,7 @@ const PropertyDetailsPage = () => {
 
         <div className="property-main-content">
           <div className="property-left-column">
-            <ImageSection imageUrls={propertyData.imageUrls} />
+            <ImageSection imageUrls={propertyData.imageUrls} className="imageSection"/>
             <OverviewSection
               propertyType={propertyData.type || "N/A"}
               bedrooms={propertyData.bedrooms || 0}

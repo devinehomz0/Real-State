@@ -1,5 +1,5 @@
 // src/pages/LoginPage.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../config/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../components/styles/login.css"; // Create this CSS file for styling
@@ -75,5 +75,5 @@ function LoginPage() {
     </div>
   );
 }
-
+ 
 export default LoginPage;
