@@ -14,7 +14,7 @@ function LoginPage() {
   const location = useLocation();
 
   // Get the path the user was trying to access, or default to admin dashboard
-  const from = location.state?.from?.pathname || "/adminnew";
+  const from = location.state?.from?.pathname || "/admin";
 
   const handleSubmit = async (e) => {
     e.preventDefault();

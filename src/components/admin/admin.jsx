@@ -16,7 +16,8 @@ function AdminMain() {
   };
   useEffect(() => {
     fetchListings();
-  }, []); const handleEdit = (listing) => {
+  }, []);
+  const handleEdit = (listing) => {
     setEditingListing(listing);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
