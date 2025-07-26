@@ -13,6 +13,7 @@ import "../../components/styles/PropertyDetails.css";
 import Navbar from "../../components/ui_Componets/navbar";
 import Footer from "../../components/ui_Componets/Footer";
 import { useLocation,useNavigate } from "react-router-dom";
+import PanaromicView from "../../components/ui_Componets/PAnoromicView";
 
 // Helper to format price
 const formatPrice = (price) => {
@@ -109,7 +110,7 @@ const PropertyDetailsPage = () => {
                   : "N/A"
               }
             />
-
+  {/* <PanaromicView></PanaromicView> */}
             <AddressSection
               address={propertyData.address || "N/A"}
               city={propertyData.city || "N/A"}

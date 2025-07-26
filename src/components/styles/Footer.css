@@ -486,4 +486,136 @@ address p {
     bottom: 15px;
     right: 15px;
   }
+}/* Services Section Styling */
+.services-section {
+  background: #004274f6;
+  padding: 30px 0;
+  /* border-top: 1px solid rgba(255, 255, 255, 0.1); */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* background-color: #004274f6; */
+}
+
+/* Service Block Styling */
+.service-block {
+  background: rgba(255, 255, 255, 0.02) ;
+  border-radius: 8px;
+  padding: 25px;
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.service-block:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.service-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.service-header h5 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 12px;
+}
+
+.service-icon {
+  font-size: 18px;
+  color: #87ceeb;
+  opacity: 0.9;
+}
+
+/* Professional Contacts Styling */
+.professional-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s ease;
+}
+
+.contact-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
+.contact-role {
+  font-size: 13px;
+  font-weight: 500;
+  color: #b0c4de;
+  min-width: 80px;
+}
+
+.contact-details {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 400;
+  text-align: right;
+}
+
+.contact-item:hover .contact-details {
+  color: #87ceeb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .service-block {
+    padding: 20px;
+  }
+  
+  .contact-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .contact-role {
+    min-width: auto;
+  }
+  
+  .contact-details {
+    text-align: left;
+  }
+  
+  .service-header h5 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-section {
+    padding: 20px 0;
+  }
+  
+  .service-block {
+    padding: 15px;
+  }
 }

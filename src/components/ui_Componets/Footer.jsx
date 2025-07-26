@@ -9,13 +9,17 @@ import {
   FaInstagram,
   FaYoutube,
   FaAngleUp,
+  FaUser,
+  FaTools,
+  FaHome,
 } from "react-icons/fa";
 import { useScroll } from "../../config/ScrollProvider";
+
 const Footer = () => {
   const handleBackToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const { contactSectionRef } = useScroll(); // Get the ref from context
+  const { contactSectionRef } = useScroll();
 
   return (
     <footer className="site-footer">
@@ -40,7 +44,7 @@ const Footer = () => {
                   <FaMapMarkerAlt className="contact-icon" />
                   <span>
                     38, Panchatara Society, Manish Nagar, Somalwada, Nagpur,
-                    Maharashtra 440015, India
+                    Maharashtra 440015, India
                   </span>
                 </li>
                 <li>
@@ -82,13 +86,84 @@ const Footer = () => {
                 <li>
                   <a className="footer-link">Renting Properties</a>
                 </li>
-                <li>
-                  <a className="footer-link">Property Management</a>
-                </li>
-                <li>
-                  <a className="footer-link">Investment Advice</a>
-                </li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Three Services Sections */}
+      <div className="services-section">
+        <div className="container">
+          <div className="services-grid">
+            {/* Property Management Section */}
+            <div className="service-block">
+              <div className="service-header">
+                <FaTools className="service-icon" />
+                <h5>Property Management</h5>
+              </div>
+              <div className="professional-contacts">
+                <div className="contact-item">
+                  <span className="contact-role">Plumber:</span>
+                  <span className="contact-details">
+                    Ashish  - 9764778170
+                  </span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-role">Electrician:</span>
+                  <span className="contact-details">
+                    Prashant Ramteke - 9921609787
+                  </span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-role">Carpenter:</span>
+                  <span className="contact-details">
+                    Janeshwar - 9764714306
+                  </span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-role">Solar:</span>
+                  <span className="contact-details">Vishrut - 7219862635</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Investment Advice Section */}
+            <div className="service-block">
+              <div className="service-header">
+                <FaUser className="service-icon" />
+                <h5>Investment Advice</h5>
+              </div>
+              <div className="professional-contacts">
+                <div className="contact-item">
+                  <span className="contact-role">C.A:</span>
+                  <span className="contact-details">
+                    Aditya Ranjan - 9890017469
+                  </span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-role">S.B.I:</span>
+                  <span className="contact-details">
+                    Mr. Pandey - 8709980316
+                  </span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-role">H.D.F.C:</span>
+                  <span className="contact-details">Sarang - 9158146145</span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-role">AxisBank:</span>
+                  <span className="contact-details">
+                    Ashish Shende - 9975988247
+                  </span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-role">Advocate:</span>
+                  <span className="contact-details">
+                    Sandeep Sontakke - 9850317071
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -115,7 +190,6 @@ const Footer = () => {
               >
                 <FaFacebookF />
               </a>
-
               <a
                 href="https://www.linkedin.com/in/prabodh-kumar-jangle-40a3bb30?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
                 target="_blank"

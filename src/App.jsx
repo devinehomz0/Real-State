@@ -10,6 +10,7 @@ import AllListings from "./pages/Listings";
 import PropertyDetails from "./pages/IndivPages/PropertyDetails";
 import LoginPage from "./pages/LoginPage"; // Import the LoginPage
 import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
+import PanaromicView from "./components/ui_Componets/PAnoromicView";
 // Ensure paths for Properties, Inquiries, CreateProperty etc are correct based on your folder structure
 
 function App() {
@@ -48,7 +49,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-
+<Route path="/pano" element={<PanaromicView></PanaromicView>}></Route>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/alllistings" element={<AllListings />} />
