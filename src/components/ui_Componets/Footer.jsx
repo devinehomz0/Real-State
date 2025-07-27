@@ -105,9 +105,7 @@ const Footer = () => {
               <div className="professional-contacts">
                 <div className="contact-item">
                   <span className="contact-role">Plumber:</span>
-                  <span className="contact-details">
-                    Ashish  - 9764778170
-                  </span>
+                  <span className="contact-details">Ashish - 9764778170</span>
                 </div>
                 <div className="contact-item">
                   <span className="contact-role">Electrician:</span>
@@ -123,7 +121,9 @@ const Footer = () => {
                 </div>
                 <div className="contact-item">
                   <span className="contact-role">Solar:</span>
-                  <span className="contact-details">Vishrut - 7219862635</span>
+                  <span className="contact-details">
+                    Ritik Vattighare - 8668314108
+                  </span>
                 </div>
               </div>
             </div>
