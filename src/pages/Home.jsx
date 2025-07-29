@@ -9,6 +9,7 @@ import RealEstateGrid from "../components/ui_Componets/RealEstateGrid";
 import EnquiryForm from "../components/ui_Componets/EnquiryForm";
 import Footer from "../components/ui_Componets/Footer";
 import DevineHomzLoader from "../components/ui_Componets/Loader";
+import PartnersShowcase from "../components/ui_Componets/Partners";
 const HomePage = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +47,7 @@ const HomePage = () => {
       <Features></Features>
       {!loading && <HorizontalListing listings={listings}></HorizontalListing>}
       <RealEstateGrid></RealEstateGrid>
+      <PartnersShowcase></PartnersShowcase>
       <EnquiryForm></EnquiryForm>
       <Footer></Footer>      
     </div>

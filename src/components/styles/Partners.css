@@ -1,0 +1,186 @@
+.partners-showcase {
+  padding: 20px 40px;
+  background: transparent;
+  /* min-height: 100vh; */
+  font-family: 'Arial', sans-serif;
+}
+
+.partners-section {
+  margin-bottom: 80px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+}
+
+.section-title {
+  font-size: 2rem ;
+  font-weight: bold;
+  color: #2c3e50;
+  min-width: 280px;
+  flex-shrink: 0;
+  text-align: left;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.partners-container {
+  flex: 1;
+  overflow: hidden;
+  background: transparent;
+  border-radius: 15px;
+  /* box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); */
+  padding: 10px 0;
+  position: relative;
+}
+
+.partners-scroll {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  /* Changed animation to move by 25% since we have 4 sets of duplicates */
+  animation: infiniteScroll 40s linear infinite;
+  width: fit-content;
+  /* Ensure smooth start */
+  will-change: transform;
+}
+
+.partner-logo {
+  flex-shrink: 0;
+  width: 140px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 2px solid #9595951f;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); */
+  /* Prevent any gaps */
+  margin: 0;
+}
+
+.partner-logo:hover {
+  transform: translateY(-8px) scale(1.05);
+  /* box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2); */
+  border-color: #4285f4;
+  background: #f8f9ff;
+}
+
+.partner-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  filter: contrast(1.1) saturate(1.1);
+}
+
+/* Updated infinite scroll animation - moves by 25% since we have 4 duplicate sets */
+@keyframes infiniteScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
+/* Pause animation on hover for better UX */
+.partners-container:hover .partners-scroll {
+  animation-play-state: paused;
+}
+
+/* Alternative slower animation */
+.partners-scroll.slow {
+  animation: infiniteScrollSlow 80s linear infinite;
+}
+
+@keyframes infiniteScrollSlow {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .partners-section {
+    gap: 40px;
+  }
+  
+  .section-title {
+    min-width: 240px;
+    font-size: 32px;
+  }
+  
+  .partner-logo {
+    width: 120px;
+    height: 85px;
+  }
+  
+  .partners-scroll {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .partners-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
+  }
+  
+  .section-title {
+    min-width: auto;
+    font-size: 28px;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .partners-container {
+    width: 100%;
+  }
+  
+  .partner-logo {
+    width: 110px;
+    height: 80px;
+  }
+  
+  .partners-scroll {
+    gap: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .partners-showcase {
+    padding: 10px 20px;
+  }
+  .section-title{
+    font-size: 1rem !important;
+  }
+  .partner-logo {
+    width: 100px;
+    height: 75px;
+    padding: 10px;
+  }
+  
+  /* .section-title {
+    font-size: 24px;
+  } */
+  
+  .partners-scroll {
+    gap: 20px;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .partners-scroll {
+    animation: none;
+  }
+}
+
