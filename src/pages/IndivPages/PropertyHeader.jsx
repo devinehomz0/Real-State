@@ -14,11 +14,11 @@ const PropertyHeader = ({
   return (
     <div className="property-header-section">
       <div className="breadcrumbs">
-        <a href="/home">Home</a> > 
+        <a href="/home">Home</a> {" > "}
         <a href="/alllistings">  
           {/*propertyData.type || 'Apartment'*/ } Listings
         </a>{" "}
-        > <span> {title}</span>
+        {" > "} <span> {title}</span>
       </div>
       <div className="title-price-actions">
         <div className="title-location">

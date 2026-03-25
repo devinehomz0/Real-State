@@ -106,7 +106,32 @@ const PropertyDetailsPage = () => {
                   : "N/A"
               }
             />
-  {/* <PanaromicView></PanaromicView> */}
+            {/* {(propertyData.virtualTour?.length > 0 || propertyData.virtualTourUrl) && (
+              <div style={{ margin: "20px 0", textAlign: "center" }}>
+                <button
+                  onClick={() => navigate("/virtual-tour", { state: { 
+                    virtualTour: propertyData.virtualTour || [],
+                    imageUrl: propertyData.virtualTourUrl // Backwards compatibility
+                  } })}
+                  style={{
+                    padding: "15px 30px",
+                    backgroundColor: "#2e7d32",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "10px"
+                  }}
+                >
+                  <span style={{ fontSize: "24px" }}>🕶️</span> Experience 3D Virtual Tour
+                </button>
+              </div>
+            )} */}
             <AddressSection
               address={propertyData.address || "N/A"}
               city={propertyData.city || "N/A"}

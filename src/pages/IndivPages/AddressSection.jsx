@@ -20,14 +20,6 @@ const AddressSection = ({
     <div className="property-section card">
       <div className="section-header-flex">
         <h3 className="section-title">Address</h3>
-        <a
-          href={`https://maps.google.com/?q=${address}, ${city}, ${stateCounty}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn btn-map"
-        >
-          <i className="fas fa-map-marked-alt"></i> Open on Google Maps
-        </a>
       </div>
       <div className="details-grid address-details-grid">
         <DetailItem label="Address" value={address} />
@@ -36,6 +28,16 @@ const AddressSection = ({
         
         <DetailItem label="State/county" value={stateCounty} />
         <DetailItem label="Country" value={country} />
+      </div>
+      <div className="address-section-footer">
+        <a
+          href={`https://maps.google.com/?q=${address}, ${city}, ${stateCounty}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-map"
+        >
+          <i className="fas fa-map-marked-alt"></i> Open on Google Maps
+        </a>
       </div>
     </div>
   );

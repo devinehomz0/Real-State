@@ -10,6 +10,7 @@ import AllListings from "./pages/Listings";
 import PropertyDetails from "./pages/IndivPages/PropertyDetails";
 import LoginPage from "./pages/LoginPage"; // Import the LoginPage
 import ProtectedRoute from "./components/ProtectedRoute"; // Import ProtectedRoute
+import VirtualTour from "./pages/VirtualTour"; // Import VirtualTour page
 // Ensure paths for Properties, Inquiries, CreateProperty etc are correct based on your folder structure
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/alllistings" element={<AllListings />} />
         <Route path="/listing/" element={<PropertyDetails  />} />
+        {/* <Route path="/virtual-tour" element={<VirtualTour />} /> */}
 
         {/* You might want a catch-all or 404 route */}
         {/* <Route path="*" element={<NotFoundPage />} /> */}

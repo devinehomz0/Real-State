@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { addDoc, updateDoc, collection, doc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import ImageUploader from "./imageUpload";
+import VirtualTourUploader from "./VirtualTourUploader";
 import { useNavigate } from "react-router-dom";
 const initialForm = {
   title: "",
@@ -32,6 +33,7 @@ const initialForm = {
   listedBy: "",
   facing: "",
   projectName: "",
+  virtualTour: [],
 };
 
 // ... (typeOptions, bhkOptions, etc. remain the same) ...
@@ -121,6 +123,7 @@ let navigate = useNavigate();
       setForm({
         ...initialForm, // Start with defaults to ensure all fields are present
         ...dataToEdit, // Spread the data to edit
+        virtualTour: dataToEdit.virtualTour || [],
         priceUnit: dataToEdit.priceUnit || "Lac", // Ensure default if not present
         features: dataToEdit.features
           ? Array.isArray(dataToEdit.features)
@@ -715,10 +718,7 @@ let navigate = useNavigate();
       {/* Price & Price Unit */}
       <div className="form-section">
         <label>Set a Price *</label>
-        <div
-          className="price-input-group"
-          style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}
-        >
+        <div className="price-input-group">
           <div style={{ flexGrow: 1 }}>
             <input
               type="number"
@@ -772,6 +772,15 @@ let navigate = useNavigate();
         )}
         {errors.images && <div className="form-error">{errors.images}</div>}
       </div>
+      {/* 360 Virtual Tour Upload */}
+      {/* <div className="form-section">
+        <label>360-Degree Virtual Tour Nodes (Rooms)</label>
+        <VirtualTourUploader
+          initialTour={form.virtualTour || []}
+          onUploadComplete={(rooms) => setForm(prev => ({ ...prev, virtualTour: rooms }))}
+          onUploading={handleImagesUploading}
+        />
+      </div> */}
       {/* Submit */}
       <button
         type="submit"
